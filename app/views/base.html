@@ -1,11 +1,17 @@
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101522">
 
-    <title>{% block title %}Mi portafolio{% endblock %}</title>
+    <meta
+        name="description"
+        content="Portafolio profesional de Jonathan Arenas, desarrollador de software."
+    >
+
+    <title>{% block title %}Jonathan Arenas | Desarrollador de software{% endblock %}</title>
 
     <link
         rel="stylesheet"
@@ -18,23 +24,69 @@
     ></script>
 </head>
 <body>
-    <header class="site-header">
-        <a class="brand" href="{{ url_for('main.home') }}">
-            Mi portafolio
-        </a>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-        <nav aria-label="Navegación principal">
-            <a href="{{ url_for('main.home') }}">Inicio</a>
-            <a href="{{ url_for('projects.list_projects') }}">Proyectos</a>
-        </nav>
+    <header class="site-header">
+        <div class="nav-container">
+            <a class="brand" href="{{ url_for('main.home') }}" aria-label="Ir al inicio">
+                <span class="brand-mark">JA</span>
+                <span>Jonathan Arenas<span class="brand-dot">.</span></span>
+            </a>
+
+            <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+                <a href="{{ url_for('main.home') }}#inicio">Inicio</a>
+                <a href="{{ url_for('main.home') }}#sobre-mi">Sobre mí</a>
+                <a href="{{ url_for('main.home') }}#experiencia">Formación</a>
+                <a href="{{ url_for('main.home') }}#habilidades">Habilidades</a>
+                <a href="{{ url_for('projects.list_projects') }}">Proyectos</a>
+                <a href="{{ url_for('main.home') }}#contacto">Contacto</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button
+                    class="theme-toggle"
+                    id="theme-toggle"
+                    type="button"
+                    aria-label="Cambiar a tema claro"
+                    title="Cambiar tema"
+                >
+                    <span id="theme-icon" aria-hidden="true">☀</span>
+                </button>
+
+                <button
+                    class="menu-toggle"
+                    id="menu-toggle"
+                    type="button"
+                    aria-controls="main-nav"
+                    aria-expanded="false"
+                    aria-label="Abrir menú"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main class="container">
+    <main id="contenido" class="page-content">
         {% block content %}{% endblock %}
     </main>
 
     <footer class="site-footer">
-        <p>Construido con Python y Flask.</p>
+        <div class="footer-inner">
+            <a class="brand footer-brand" href="{{ url_for('main.home') }}">
+                <span class="brand-mark">JA</span>
+                <span>Jonathan Arenas<span class="brand-dot">.</span></span>
+            </a>
+
+            <p>Diseñado y desarrollado con Python, Flask y mucho aprendizaje.</p>
+
+            <p class="copyright">
+                © <span id="current-year">2026</span> Jonathan Arenas.
+                Todos los derechos reservados.
+            </p>
+        </div>
     </footer>
 </body>
 </html>
