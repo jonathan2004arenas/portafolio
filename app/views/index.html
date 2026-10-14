@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+{% block title %}Inicio | Mi portafolio{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">PORTAFOLIO DE DESARROLLO</p>
+
+    <h1>Hola, soy Arenas.</h1>
+
+    <p class="hero-description">
+        Desarrollo software y construyo soluciones mediante código.
+        Este es el espacio donde comparto mis proyectos y aprendizajes.
+    </p>
+
+    <a class="button" href="{{ url_for('projects.list_projects') }}">
+        Explorar mis proyectos
+    </a>
+</section>
+{% endblock %}

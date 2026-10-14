@@ -1,0 +1,63 @@
+
+{% extends "base.html" %}
+
+{% block title %}Proyectos | Mi portafolio{% endblock %}
+
+{% block content %}
+<section>
+    <p class="eyebrow">LO QUE HE CONSTRUIDO</p>
+    <h1>Mis proyectos</h1>
+
+    <div class="project-filters">
+        <label for="project-search">Buscar proyectos</label>
+        <input
+            id="project-search"
+            type="search"
+            placeholder="Buscar por nombre o descripción..."
+        >
+
+        <label for="technology-filter">Tecnología</label>
+        <select id="technology-filter">
+            <option value="">Todas las tecnologías</option>
+
+            {% for technology in technologies %}
+            <option value="{{ technology | lower }}">
+                {{ technology }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <p id="results-count" aria-live="polite">
+        {{ projects | length }} proyectos encontrados
+    </p>
+
+    <div class="project-grid" id="project-grid">
+        {% for project in projects %}
+        <article
+            class="project-card"
+            data-search="{{ (project.title ~ ' ' ~ project.description) | lower }}"
+            data-technologies="{{ project.technologies | map('lower') | join(',') }}"
+        >
+            <h2>{{ project.title }}</h2>
+
+            <p>{{ project.description }}</p>
+
+            <div class="tags">
+                {% for technology in project.technologies %}
+                <span class="tag">{{ technology }}</span>
+                {% endfor %}
+            </div>
+
+            <a href="{{ url_for('projects.project_detail', project_id=project.id) }}">
+                Ver detalles →
+            </a>
+        </article>
+        {% endfor %}
+    </div>
+
+    <p id="no-results" hidden>
+        No encontramos proyectos con esos filtros.
+    </p>
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Mi portafolio{% endblock %}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/styles.css') }}"
+    >
+
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}"
+        defer
+    ></script>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('main.home') }}">
+            Mi portafolio
+        </a>
+
+        <nav aria-label="Navegación principal">
+            <a href="{{ url_for('main.home') }}">Inicio</a>
+            <a href="{{ url_for('projects.list_projects') }}">Proyectos</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <p>Construido con Python y Flask.</p>
+    </footer>
+</body>
+</html>

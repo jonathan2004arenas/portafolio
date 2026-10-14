@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} | Mi portafolio{% endblock %}
+
+{% block content %}
+<article class="project-detail">
+    <a href="{{ url_for('projects.list_projects') }}">
+        ← Volver a proyectos
+    </a>
+
+    <h1>{{ project.title }}</h1>
+
+    <p>{{ project.description }}</p>
+
+    <h2>Tecnologías utilizadas</h2>
+
+    <div class="tags">
+        {% for technology in project.technologies %}
+        <span class="tag">{{ technology }}</span>
+        {% endfor %}
+    </div>
+
+    <div class="project-links">
+        <a href="{{ project.github }}" target="_blank" rel="noopener noreferrer">
+            Ver código
+        </a>
+
+        {% if project.demo %}
+        <a href="{{ project.demo }}" target="_blank" rel="noopener noreferrer">
+            Ver demo
+        </a>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}
