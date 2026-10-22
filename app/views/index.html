@@ -5,86 +5,163 @@
 
 {% block content %}
 
-<section class="hero section-shell" id="inicio">
+<section class="hero hero-banner" id="inicio">
     <div class="hero-copy reveal">
-        <p class="eyebrow"><span class="status-dot"></span> PORTAFOLIO DE DESARROLLO</p>
-
-        <h1>
-            Hola, soy<br>
-            <span class="gradient-text">Jonathan Arenas.</span>
-        </h1>
-
-        <h2 class="hero-subtitle">Desarrollador de software en formación</h2>
-
-        <p class="hero-description">
-            Me apasiona crear soluciones digitales, construir experiencias web
-            y aprender nuevas tecnologías. Aquí puedes conocer mi trayectoria
-            y algunos de los proyectos en los que he trabajado.
+        <p class="eyebrow">
+            BIENVENIDO A MI PORTAFOLIO
         </p>
 
-        <div class="hero-actions">
-            <a class="button button-primary" href="#proyectos">
-                Ver mis proyectos <span aria-hidden="true">↗</span>
-            </a>
-            <a class="button button-secondary" href="#contacto">
-                Hablemos
-            </a>
-        </div>
+        <h1>
+            BIENVENIDOS A MI PÁGINA
+            <br>
+            <span class="gradient-text">
+                SOY UN DESARROLLADOR WEB
+            </span>
+        </h1>
 
         <div class="social-links" aria-label="Redes sociales">
-            <a href="https://github.com/jonathan2004arenas"
-               target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            <a href="https://www.linkedin.com/in/jonathan-arenas-b4976b291/"
-               target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
-            <a href="https://www.facebook.com/jonathan.arenas.0/"
-               target="_blank" rel="noopener noreferrer">Facebook ↗</a>
-        </div>
-    </div>
-
-    <div class="hero-visual reveal">
-        <div class="hero-glow"></div>
-        <div class="profile-frame">
-            <img
-                src="{{ url_for('static', filename='img/WhatsApp_Image_2023-07-23_at_8.00 1.png') }}"
-                alt="Fotografía de Jonathan Arenas"
-                onerror="this.style.display='none'; this.nextElementSibling.hidden=false;"
+            <a
+                href="https://www.linkedin.com/in/jonathan-arenas-b4976b291/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
             >
-            <div class="profile-placeholder" hidden>JA</div>
-        </div>
+                <img
+                    src="{{ url_for('static', filename='img/iconos/linkedin.png') }}"
+                    alt=""
+                >
+            </a>
 
-        <div class="floating-card floating-card-top">
-            <span class="floating-icon" aria-hidden="true">⌘</span>
-            <span><strong>Desarrollo web</strong><small>Aprender · Crear · Mejorar</small></span>
-        </div>
+            <a
+                href="https://www.facebook.com/jonathan.arenas.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+            >
+                <img
+                    src="{{ url_for('static', filename='img/iconos/facebook.png') }}"
+                    alt=""
+                >
+            </a>
 
-        <div class="floating-card floating-card-bottom">
-            <span class="availability-dot"></span>
-            <span>Siempre aprendiendo</span>
+            <a
+                href="https://github.com/jonathan2004arenas"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+            >
+                <img
+                    src="{{ url_for('static', filename='img/iconos/github.png') }}"
+                    alt=""
+                >
+            </a>
         </div>
     </div>
+
+    <div class="hero-visual" aria-hidden="true"></div>
 </section>
 
-<section class="content-section section-shell" id="sobre-mi">
+<section class="content-section section-shell" id="sobre-mi"> 
+    <div class="section-heading reveal"> 
+        <p class="eyebrow">CONÓCEME</p> 
+        <h2>Sobre <span class="gradient-text">mí</span></h2> 
+        <p>Un poco de mi historia y de lo que me motiva.</p> 
+    </div> 
+ 
+    <div class="about-grid"> 
+        <article class="surface-card about-card reveal"> 
+            <span class="card-kicker">01 / PRESENTACIÓN</span> 
+            <h3>Curiosidad que se convierte en código.</h3> 
+            <p> 
+                Soy Jonathan Arenas, estudiante de Análisis y Desarrollo de 
+                Software. Me entusiasma crear soluciones innovadoras, trabajar 
+                en equipo y convertir ideas en proyectos digitales. 
+            </p> 
+            <p> 
+                Estoy construyendo mis habilidades paso a paso, combinando 
+                aprendizaje constante con práctica y proyectos reales. 
+            </p> 
+            <a class="text-link" href="#contacto">Conectemos <span aria-hidden="true">→</span></a> 
+        </article> 
+ 
+        <article class="surface-card about-card about-facts reveal"> 
+            <span class="card-kicker">02 / MI PERFIL</span> 
+            <div class="fact-row"> 
+                <span>Nombre</span> 
+                <strong>Jonathan Arenas</strong> 
+            </div> 
+            <div class="fact-row"> 
+                <span>País</span> 
+                <strong>Colombia</strong> 
+            </div> 
+            <div class="fact-row"> 
+                <span>Enfoque</span> 
+                <strong>Desarrollo de software y web</strong> 
+            </div> 
+            <div class="fact-row"> 
+                <span>Actitud</span> 
+                <strong>Aprendizaje continuo</strong> 
+            </div> 
+        </article> 
+    </div> 
+</section>
+
+<!-- <section class="content-section section-shell" id="sobre-mi">
     <div class="section-heading reveal">
         <p class="eyebrow">CONÓCEME</p>
         <h2>Sobre <span class="gradient-text">mí</span></h2>
         <p>Un poco de mi historia y de lo que me motiva.</p>
     </div>
 
-    <div class="about-grid">
+    <div class="about-grid about-layout">
+
+        NUEVA COMPOSICIÓN DE LA FOTOGRAFÍA
+        <div class="portrait-composition reveal">
+
+            Marco que queda detrás
+            <div class="portrait-back-frame"></div>
+
+            Tarjeta que contiene la fotografía
+            <div class="portrait-photo-card">
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename='img/WhatsApp_Image_2023-07-23_at_8.00 1.png'
+                    ) }}"
+                    alt="Retrato de Jonathan Arenas"
+                    class="portrait-photo"
+                >
+            </div>
+
+            Detalle decorativo
+            <div class="portrait-caption">
+                <span class="portrait-caption-dot"></span>
+                <span>JONATHAN ARENAS</span>
+            </div>
+
+        </div>
+
+        INFORMACIÓN SOBRE MÍ
         <article class="surface-card about-card reveal">
             <span class="card-kicker">01 / PRESENTACIÓN</span>
+
             <h3>Curiosidad que se convierte en código.</h3>
+
             <p>
-                Soy Jonathan Arenas, estudiante de Análisis y Desarrollo de
-                Software. Me entusiasma crear soluciones innovadoras, trabajar
-                en equipo y convertir ideas en proyectos digitales.
+                Soy Jonathan Arenas, estudiante de Análisis y Desarrollo
+                de Software. Me entusiasma crear soluciones digitales,
+                aprender nuevas tecnologías y convertir ideas en proyectos.
             </p>
+
             <p>
-                Estoy construyendo mis habilidades paso a paso, combinando
-                aprendizaje constante con práctica y proyectos reales.
+                Estoy fortaleciendo mis habilidades paso a paso,
+                combinando aprendizaje constante con práctica y proyectos
+                personales.
             </p>
-            <a class="text-link" href="#contacto">Conectemos <span aria-hidden="true">→</span></a>
+
+            <a class="text-link" href="#contacto">
+                Conectemos <span aria-hidden="true">→</span>
+            </a>
         </article>
 
         <article class="surface-card about-card about-facts reveal">
@@ -107,7 +184,7 @@
             </div>
         </article>
     </div>
-</section>
+</section> -->
 
 <section class="content-section section-shell" id="experiencia">
     <div class="section-heading reveal">

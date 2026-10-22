@@ -1173,3 +1173,321 @@ a:focus-visible {
         transform: none;
     }
 }
+/* ========================================
+   NUEVA PORTADA: ESTILO ORIGINAL
+   ======================================== */
+
+.site-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 0;
+    background: rgba(20, 20, 25, 0.18);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.nav-container {
+    width: min(1240px, 92%);
+    min-height: 90px;
+}
+
+.brand {
+    padding: 10px 18px;
+    background: rgba(90, 90, 90, 0.55);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.brand-mark,
+.brand-dot {
+    display: none;
+}
+
+.main-nav {
+    gap: clamp(12px, 1.8vw, 25px);
+}
+
+.main-nav a {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.main-nav a:hover {
+    color: #ffd2a3;
+}
+
+.nav-actions .theme-toggle {
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.nav-actions .menu-toggle {
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-actions .menu-toggle span {
+    background: #fff;
+}
+
+/* Portada panorámica */
+.hero.hero-banner {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 140px 6% 70px;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        linear-gradient(
+            rgba(10, 10, 18, 0.42),
+            rgba(10, 10, 18, 0.60)
+        ),
+        url("/static/img/panorama-silueta-centro-manhattan-ciudad-nueva-york-al-atardecer-rascacielos-cielo-colorido-sobre-rio 1.png")
+        center center / cover no-repeat;
+}
+
+.hero-banner .hero-copy {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+    color: #fff;
+}
+
+.hero-banner .eyebrow {
+    justify-content: center;
+    color: #fff;
+}
+
+.hero-banner h1 {
+    margin: 20px 0;
+    font-size: clamp(2.4rem, 3vw, 5rem);
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.4);
+}
+
+.hero-banner .gradient-text {
+    background: none;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}
+
+.hero-banner .hero-subtitle {
+    margin: 10px 0;
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.hero-banner .hero-description {
+    max-width: 650px;
+    margin: 16px auto;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-banner .hero-actions {
+    justify-content: center;
+}
+
+.hero-banner .hero-actions .button {
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-banner .button-primary {
+    background: #fff;
+    color: #20202a;
+    box-shadow: none;
+}
+
+.hero-banner .button-secondary {
+    background: rgba(20, 20, 30, 0.25);
+    color: #fff;
+}
+
+.hero-banner .social-links {
+    justify-content: center;
+    gap: 18px;
+    margin-top: 30px;
+}
+
+.hero-banner .social-links a {
+    display: grid;
+    width: 50px;
+    height: 50px;
+    place-items: center;
+    overflow: hidden;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #fff;
+    color: #222;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-banner .social-links a:hover {
+    transform: translateY(-5px);
+    background: #f1d5bd;
+}
+
+.hero-banner .social-links img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.hero-banner .hero-visual {
+    display: none;
+}
+
+/* Menú para pantallas pequeñas */
+@media (max-width: 760px) {
+    .nav-container {
+        min-height: 75px;
+    }
+
+    .main-nav {
+        top: 100%;
+        background: rgba(20, 20, 28, 0.97);
+    }
+
+    .main-nav a {
+        color: #fff;
+    }
+
+    .hero.hero-banner {
+        min-height: 100svh;
+        padding: 120px 6% 55px;
+        background-position: center;
+    }
+
+    .hero-banner h1 {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    .hero-banner .hero-subtitle {
+        font-size: 1.05rem;
+    }
+}
+
+
+/* ========================================
+   EXPERIMENTO: RETRATO CON PROFUNDIDAD
+   ======================================== */
+
+.about-layout {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(35px, 6vw, 80px);
+}
+
+/* Zona donde se superponen las capas */
+.portrait-composition {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 430px;
+    min-height: 440px;
+    margin: 0 auto;
+}
+
+/* Marco posterior */
+.portrait-back-frame {
+    position: absolute;
+    z-index: -1;
+    top: 20px;
+    right: 5px;
+    bottom: 35px;
+    left: 35px;
+    border: 1px solid rgba(190, 202, 224, 0.8);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.015);
+}
+
+/* Tarjeta central de la fotografía */
+.portrait-photo-card {
+    position: absolute;
+    top: 0;
+    right: 35px;
+    bottom: 65px;
+    left: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+    background: #85858a;
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.28);
+}
+
+/* Retrato */
+.portrait-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+/* Etiqueta por delante de la composición */
+.portrait-caption {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.portrait-caption-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+}
+
+/* Adaptación a móviles */
+@media (max-width: 760px) {
+    .about-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 30px;
+    }
+
+    .portrait-composition {
+        width: min(100%, 380px);
+        min-height: 390px;
+    }
+
+    .portrait-photo-card {
+        right: 28px;
+        bottom: 55px;
+    }
+
+    .portrait-back-frame {
+        left: 25px;
+        bottom: 28px;
+    }
+}

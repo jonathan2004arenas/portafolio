@@ -19,7 +19,7 @@ def test_home_page(client):
     response = client.get("/")
 
     assert response.status_code == 200
-    assert b"Hola, soy Arenas" in response.data
+    assert b"Jonathan Arenas" in response.data
 
 
 def test_projects_page(client):
