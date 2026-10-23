@@ -1,0 +1,100 @@
+
+{% extends "base.html" %}
+
+{% block title %}Contacto | Jonathan Arenas{% endblock %}
+
+{% block content %}
+<section class="content-section section-shell contact-page">
+    <div class="section-heading reveal">
+        <p class="eyebrow">HABLEMOS</p>
+        <h1>Conectemos <span class="gradient-text">ideas</span></h1>
+        <p>
+            ¿Tienes una propuesta, una oportunidad o quieres hablar
+            sobre alguno de mis proyectos? Escríbeme.
+        </p>
+    </div>
+
+    <div class="contact-layout">
+        <aside class="surface-card contact-info reveal">
+            <span class="card-kicker">REDES Y CONTACTO</span>
+            <h2>Encuéntrame en línea</h2>
+            <p>
+                Puedes seguir mis proyectos o comunicarte conmigo
+                a través de estos canales.
+            </p>
+
+            <a href="mailto:jonathanarenas11282004@gmail.com"
+               class="contact-detail">
+                <strong>Correo electrónico</strong>
+                <span>jonathanarenas11282004@gmail.com</span>
+            </a>
+
+            <a href="https://github.com/jonathan2004arenas"
+               class="contact-detail" target="_blank"
+               rel="noopener noreferrer">
+                <strong>GitHub</strong>
+                <span>Mis repositorios y proyectos ↗</span>
+            </a>
+
+            <a href="https://www.linkedin.com/in/jonathan-arenas-b4976b291/"
+               class="contact-detail" target="_blank"
+               rel="noopener noreferrer">
+                <strong>LinkedIn</strong>
+                <span>Mi perfil profesional ↗</span>
+            </a>
+
+            <a href="https://www.facebook.com/jonathan.arenas.0/"
+               class="contact-detail" target="_blank"
+               rel="noopener noreferrer">
+                <strong>Facebook</strong>
+                <span>Mi perfil social ↗</span>
+            </a>
+        </aside>
+
+        <div class="surface-card contact-form-card reveal">
+            <h2>Envíame un mensaje</h2>
+            <p class="contact-form-intro">
+                Completa los campos y revisa tu mensaje antes de enviarlo.
+            </p>
+
+            <form action="https://formsubmit.co/jonathanarenas11282004@gmail.com"
+                  method="POST" class="contact-form">
+
+                <input type="hidden" name="_subject"
+                       value="Nuevo mensaje desde mi portafolio">
+                <input type="hidden" name="_template" value="table">
+
+                <label for="contact-name">Nombre</label>
+                <input id="contact-name" name="name" type="text"
+                       autocomplete="name" maxlength="100"
+                       placeholder="Tu nombre" required>
+
+                <label for="contact-email">Correo electrónico</label>
+                <input id="contact-email" name="email" type="email"
+                       autocomplete="email" maxlength="254"
+                       placeholder="tu@correo.com" required>
+
+                <label for="contact-subject">Asunto</label>
+                <input id="contact-subject" name="subject" type="text"
+                       maxlength="150" placeholder="¿De qué quieres hablar?"
+                       required>
+
+                <label for="contact-message">Mensaje</label>
+                <textarea id="contact-message" name="message"
+                          rows="6" maxlength="5000"
+                          placeholder="Escribe tu mensaje aquí..."
+                          required></textarea>
+
+                <button type="submit" class="button button-primary">
+                    Enviar mensaje <span aria-hidden="true">→</span>
+                </button>
+
+                <p class="contact-privacy-note">
+                    El formulario utiliza un servicio externo para procesar
+                    y entregar el mensaje.
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

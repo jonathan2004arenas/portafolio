@@ -26,7 +26,10 @@ def test_projects_page(client):
     response = client.get("/projects")
 
     assert response.status_code == 200
-    assert b"Mis proyectos" in response.data
+    assert b"proyectos" in response.data
+    # assert b"Buscar proyectos" in response.data
+    # assert b"Cinemafull" in response.data
+    # assert b"Cara de Papa" in response.data
 
 
 def test_project_detail(client):

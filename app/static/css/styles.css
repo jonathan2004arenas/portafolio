@@ -1491,3 +1491,397 @@ a:focus-visible {
         bottom: 28px;
     }
 }
+
+/* ========================================
+   TARJETAS DE PROYECTOS Y DETALLES
+======================================== */
+
+.projects-page .section-heading h1 {
+    margin: 10px 0;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.055em;
+}
+
+.projects-page .section-heading > p:last-child {
+    color: var(--muted);
+}
+
+.project-card {
+    padding: 0;
+    overflow: hidden;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+}
+
+.project-card .project-image {
+    height: 230px;
+}
+
+.project-card .project-body {
+    padding: 24px;
+}
+
+.project-card .project-body h2 {
+    margin: 0 0 10px;
+    font-size: 1.3rem;
+    line-height: 1.3;
+}
+
+.project-card .project-body p {
+    min-height: 0;
+}
+
+.project-card .tags {
+    margin: 18px 0;
+}
+
+.project-card[hidden] {
+    display: none;
+}
+
+/* Página individual de cada proyecto */
+
+.project-detail {
+    padding: clamp(22px, 5vw, 48px);
+}
+
+.project-detail > .eyebrow {
+    margin-top: 32px;
+}
+
+.project-detail h1 {
+    margin: 12px 0;
+    font-size: clamp(2.3rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.05em;
+}
+
+.project-detail > p:not(.eyebrow) {
+    max-width: 780px;
+    color: var(--muted);
+}
+
+.project-detail-image {
+    margin: 30px 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--background-soft);
+}
+
+.project-detail-image img {
+    display: block;
+    width: 100%;
+    max-height: 560px;
+    object-fit: contain;
+    object-position: center;
+}
+
+.project-detail h2 {
+    margin-top: 30px;
+    font-size: 1.3rem;
+}
+
+.project-detail .project-links {
+    margin-top: 28px;
+}
+
+@media (max-width: 520px) {
+    .project-card .project-image {
+        height: 210px;
+    }
+
+    .project-card .project-body {
+        padding: 20px;
+    }
+
+    .project-detail .project-links {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ========================================
+   EXPERIENCIA Y FORMACIÓN: TARJETAS
+======================================== */
+
+.timeline-modern {
+    max-width: 900px;
+    margin-inline: auto;
+}
+
+.timeline-modern .timeline-card {
+    padding: clamp(20px, 3vw, 30px);
+    border-radius: 18px;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.timeline-modern .timeline-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent, #8b5cf6);
+}
+
+.timeline-card-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.timeline-modern .timeline-date {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.timeline-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.timeline-modern .timeline-card h3 {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    line-height: 1.4;
+}
+
+.timeline-place {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.timeline-modern .timeline-card > p:not(.timeline-place):not(.example-note) {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.example-note {
+    margin-top: 16px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--accent, #8b5cf6);
+    background: var(--background-soft, rgba(139, 92, 246, 0.08));
+    font-size: 0.82rem;
+}
+
+/* ========================================
+   HABILIDADES CON CÍRCULOS DE PROGRESO
+======================================== */
+
+.skills-progress-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.skill-progress-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 26px 20px;
+    text-align: center;
+}
+
+.skill-progress {
+    --progress: 50;
+    --progress-color: var(--accent, #8b5cf6);
+
+    display: grid;
+    width: 124px;
+    aspect-ratio: 1;
+    place-items: center;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--progress-color) calc(var(--progress) * 1%),
+        var(--border) 0
+    );
+    position: relative;
+}
+
+.skill-progress-inner {
+    display: grid;
+    width: 94px;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+}
+
+.skill-progress-inner span {
+    font-size: 1.35rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.skill-progress-card h3 {
+    margin: 0 0 8px;
+}
+
+.skill-progress-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 520px) {
+    .timeline-card-top {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .skills-progress-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .skill-progress-card {
+        padding: 20px 12px;
+    }
+
+    .skill-progress {
+        width: 100px;
+    }
+
+    .skill-progress-inner {
+        width: 76px;
+    }
+
+    .skill-progress-inner span {
+        font-size: 1.1rem;
+    }
+}
+
+/* ========================================
+   PÁGINA DE CONTACTO
+======================================== */
+
+.contact-page .section-heading h1 {
+    margin: 10px 0;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.05em;
+}
+
+.contact-page .section-heading > p:last-child {
+    color: var(--muted);
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.contact-info,
+.contact-form-card {
+    padding: clamp(22px, 4vw, 34px);
+    border-radius: 18px;
+}
+
+.contact-info h2,
+.contact-form-card h2 {
+    margin: 16px 0 10px;
+    font-size: 1.45rem;
+}
+
+.contact-info > p,
+.contact-form-intro {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 20px;
+    padding-top: 17px;
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.contact-detail strong {
+    color: var(--text);
+}
+
+.contact-detail span {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.contact-detail:hover span {
+    color: var(--accent, #8b5cf6);
+}
+
+.contact-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.contact-form label {
+    margin-top: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--background-soft, transparent);
+    color: var(--text);
+    font: inherit;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: 2px solid var(--accent, #8b5cf6);
+    outline-offset: 2px;
+}
+
+.contact-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.contact-form .button {
+    justify-self: start;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.contact-privacy-note {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+    .contact-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contact-form .button {
+        width: 100%;
+        justify-self: stretch;
+    }
+}
