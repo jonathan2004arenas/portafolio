@@ -1,6 +1,10 @@
 
 # app/models/project.py
 
+import json
+
+from app.database import get_db_connection
+
 PROJECTS = [
     {
         "id": 1,
@@ -72,35 +76,181 @@ PROJECTS = [
 ]
 
 
-def get_all_projects():
+def get_default_projects():
     """Devuelve todos los proyectos."""
     return PROJECTS.copy()
 
 
-def get_project_by_id(project_id):
-    """Busca un proyecto por su identificador."""
-    for project in PROJECTS:
-        if project["id"] == project_id:
-            return project
+def _row_to_project(row):
+    """Convierte una fila de SQLite en un diccionario de Python."""
+    if row is None:
+        return None
 
-    return None
+    project = dict(row)
+
+    project["technologies"] = json.loads(
+        project.get("technologies") or "[]"
+    )
+    project["featured"] = bool(project["featured"])
+
+    return project
+
+
+def get_all_projects():
+    """Obtiene todos los proyectos guardados en SQLite."""
+    connection = get_db_connection()
+
+    try:
+        rows = connection.execute(
+            "SELECT * FROM projects ORDER BY id"
+        ).fetchall()
+
+        return [_row_to_project(row) for row in rows]
+    finally:
+        connection.close()
+
+
+def get_project_by_id(project_id):
+    """Obtiene un proyecto por su identificador."""
+    connection = get_db_connection()
+
+    try:
+        row = connection.execute(
+            "SELECT * FROM projects WHERE id = ?",
+            (project_id,),
+        ).fetchone()
+
+        return _row_to_project(row)
+    finally:
+        connection.close()
 
 
 def get_all_technologies():
-    """Devuelve las tecnologías únicas de todos los proyectos."""
-    technologies = {
-        technology
-        for project in PROJECTS
-        for technology in project["technologies"]
-    }
+    """Devuelve las tecnologías utilizadas en los proyectos."""
+    technologies = set()
+
+    for project in get_all_projects():
+        technologies.update(project["technologies"])
 
     return sorted(technologies, key=str.lower)
 
 
 def get_featured_projects():
-    """Devuelve únicamente los proyectos destacados."""
-    return [
-        project.copy()
-        for project in PROJECTS
-        if project["featured"]
-    ]
+    """Obtiene los proyectos destacados."""
+    connection = get_db_connection()
+
+    try:
+        rows = connection.execute(
+            """
+            SELECT * FROM projects
+            WHERE featured = 1
+            ORDER BY id
+            """
+        ).fetchall()
+
+        return [_row_to_project(row) for row in rows]
+    finally:
+        connection.close()
+
+
+def create_project(data):
+    """Guarda un nuevo proyecto."""
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.execute(
+            """
+            INSERT INTO projects (
+                title, description, technologies,
+                github, demo, image, featured
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                data["title"].strip(),
+                data["description"].strip(),
+                json.dumps(
+                    data.get("technologies", []),
+                    ensure_ascii=False,
+                ),
+                data.get("github", "").strip(),
+                data.get("demo", "").strip(),
+                data.get("image", "").strip(),
+                int(bool(data.get("featured", False))),
+            ),
+        )
+
+        project_id = cursor.lastrowid
+        connection.commit()
+
+        return get_project_by_id(project_id)
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+
+
+def update_project(project_id, data):
+    """Actualiza los datos de un proyecto existente."""
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.execute(
+            """
+            UPDATE projects
+            SET title = ?,
+                description = ?,
+                technologies = ?,
+                github = ?,
+                demo = ?,
+                image = ?,
+                featured = ?
+            WHERE id = ?
+            """,
+            (
+                data["title"].strip(),
+                data["description"].strip(),
+                json.dumps(
+                    data.get("technologies", []),
+                    ensure_ascii=False,
+                ),
+                data.get("github", "").strip(),
+                data.get("demo", "").strip(),
+                data.get("image", "").strip(),
+                int(bool(data.get("featured", False))),
+                project_id,
+            ),
+        )
+
+        connection.commit()
+
+        if cursor.rowcount == 0:
+            return None
+
+        return get_project_by_id(project_id)
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
+
+
+def delete_project(project_id):
+    """Elimina un proyecto por su identificador."""
+    connection = get_db_connection()
+
+    try:
+        cursor = connection.execute(
+            "DELETE FROM projects WHERE id = ?",
+            (project_id,),
+        )
+
+        connection.commit()
+
+        return cursor.rowcount > 0
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        connection.close()
