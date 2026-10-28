@@ -1,2 +1,3 @@
 Flask
-pytestpython-dotenv
+pytest
+python-dotenv

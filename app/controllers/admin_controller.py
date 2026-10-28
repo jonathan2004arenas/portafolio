@@ -205,3 +205,197 @@ def edit_project_view(project_id):
         project=project,
         form_title="Editar proyecto",
     )
+
+@admin_bp.route(
+    "/projects/<int:project_id>/delete",
+    methods=["POST"],
+)
+@login_required
+def delete_project_view(project_id):
+    from app.models.project import (
+        delete_project,
+        get_project_by_id,
+    )
+
+    # Comprobar que el proyecto existe antes de eliminarlo.
+    project = get_project_by_id(project_id)
+
+    if project is None:
+        abort(404)
+
+    # Validar el token de seguridad del formulario.
+    validate_csrf()
+
+    deleted = delete_project(project_id)
+
+    if not deleted:
+        abort(404)
+
+    flash(
+        f'El proyecto "{project["title"]}" se eliminó correctamente.',
+        "success",
+    )
+
+    return redirect(url_for("admin.dashboard"))
+
+
+def _get_skill_form_data():
+    """Valida los datos enviados desde el formulario de habilidades."""
+    name = request.form.get("name", "").strip()
+    percentage_text = request.form.get("percentage", "")
+    sort_order_text = request.form.get("sort_order", "0")
+
+    if not name:
+        return None
+
+    try:
+        percentage = int(percentage_text)
+        sort_order = int(sort_order_text)
+    except (TypeError, ValueError):
+        return None
+
+    if not 0 <= percentage <= 100 or sort_order < 0:
+        return None
+
+    return {
+        "name": name,
+        "percentage": percentage,
+        "sort_order": sort_order,
+    }
+
+
+@admin_bp.route("/skills")
+@login_required
+def skills_list():
+    from app.models.skill import get_all_skills
+
+    return render_template(
+        "admin_skills.html",
+        skills=get_all_skills(),
+    )
+
+
+@admin_bp.route("/skills/new", methods=["GET", "POST"])
+@login_required
+def create_skill_view():
+    from app.models.skill import create_skill
+
+    if request.method == "POST":
+        validate_csrf()
+        data = _get_skill_form_data()
+
+        if data is None:
+            flash(
+                "Revisa el nombre, el porcentaje (0 a 100) y el orden.",
+                "error",
+            )
+            return render_template(
+                "admin_skill_form.html",
+                skill=None,
+                form_title="Crear habilidad",
+            ), 400
+
+        try:
+            create_skill(data)
+        except Exception as error:
+            # El nombre es único. Evitamos mostrar detalles internos.
+            current_app.logger.warning(
+                "No se pudo crear la habilidad: %s", error
+            )
+            flash(
+                "No se pudo guardar la habilidad. "
+                "Comprueba que no exista otra con el mismo nombre.",
+                "error",
+            )
+            return render_template(
+                "admin_skill_form.html",
+                skill=None,
+                form_title="Crear habilidad",
+            ), 400
+
+        flash("Habilidad creada correctamente.", "success")
+        return redirect(url_for("admin.skills_list"))
+
+    return render_template(
+        "admin_skill_form.html",
+        skill=None,
+        form_title="Crear habilidad",
+    )
+
+
+@admin_bp.route(
+    "/skills/<int:skill_id>/edit",
+    methods=["GET", "POST"],
+)
+@login_required
+def edit_skill_view(skill_id):
+    from app.models.skill import get_skill_by_id, update_skill
+
+    skill = get_skill_by_id(skill_id)
+
+    if skill is None:
+        abort(404)
+
+    if request.method == "POST":
+        validate_csrf()
+        data = _get_skill_form_data()
+
+        if data is None:
+            flash(
+                "Revisa el nombre, el porcentaje (0 a 100) y el orden.",
+                "error",
+            )
+            return render_template(
+                "admin_skill_form.html",
+                skill=skill,
+                form_title="Editar habilidad",
+            ), 400
+
+        try:
+            updated = update_skill(skill_id, data)
+        except Exception as error:
+            current_app.logger.warning(
+                "No se pudo actualizar la habilidad: %s", error
+            )
+            flash(
+                "No se pudo guardar. Comprueba que no exista otra "
+                "habilidad con el mismo nombre.",
+                "error",
+            )
+            return render_template(
+                "admin_skill_form.html",
+                skill=skill,
+                form_title="Editar habilidad",
+            ), 400
+
+        if updated is None:
+            abort(404)
+
+        flash("Habilidad actualizada correctamente.", "success")
+        return redirect(url_for("admin.skills_list"))
+
+    return render_template(
+        "admin_skill_form.html",
+        skill=skill,
+        form_title="Editar habilidad",
+    )
+
+
+@admin_bp.route(
+    "/skills/<int:skill_id>/delete",
+    methods=["POST"],
+)
+@login_required
+def delete_skill_view(skill_id):
+    from app.models.skill import delete_skill, get_skill_by_id
+
+    skill = get_skill_by_id(skill_id)
+
+    if skill is None:
+        abort(404)
+
+    validate_csrf()
+    delete_skill(skill_id)
+
+    flash("Habilidad eliminada correctamente.", "success")
+    return redirect(url_for("admin.skills_list"))

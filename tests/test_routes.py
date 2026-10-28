@@ -1,4 +1,3 @@
-
 import pytest
 
 from werkzeug.security import generate_password_hash
@@ -231,3 +230,169 @@ def test_admin_cannot_create_project_without_required_fields(client):
 
     assert response.status_code == 400
     assert "obligatorios".encode() in response.data
+
+
+def test_admin_can_delete_project(client):
+    _admin_login(client)
+
+    # Obtener el token CSRF de la sesión autenticada.
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    # Confirmar que el proyecto existe antes de eliminarlo.
+    response = client.get("/projects/1")
+    assert response.status_code == 200
+
+    # Eliminar mediante POST.
+    response = client.post(
+        "/admin/projects/1/delete",
+        data={"csrf_token": token},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"elimin" in response.data.lower()
+
+    # Verificar que ya no existe.
+    response = client.get("/projects/1")
+    assert response.status_code == 404
+
+
+def test_admin_cannot_delete_project_without_login(client):
+    response = client.post(
+        "/admin/projects/1/delete",
+        data={"csrf_token": "token-invalido"},
+    )
+
+    assert response.status_code == 302
+    assert "/admin/login" in response.headers["Location"]
+
+
+def test_admin_can_list_skills(client):
+    _admin_login(client)
+
+    response = client.get("/admin/skills")
+
+    assert response.status_code == 200
+    assert b"Administrar habilidades" in response.data
+    assert b"Python y Flask" in response.data
+
+
+def test_admin_can_create_skill(client):
+    _admin_login(client)
+
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    response = client.post(
+        "/admin/skills/new",
+        data={
+            "csrf_token": token,
+            "name": "Docker",
+            "percentage": "40",
+            "sort_order": "7",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"Docker" in response.data
+
+
+def test_admin_can_edit_skill(client):
+    _admin_login(client)
+
+    from app.models.skill import get_all_skills
+
+    skill = get_all_skills()[0]
+
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    response = client.post(
+        f"/admin/skills/{skill['id']}/edit",
+        data={
+            "csrf_token": token,
+            "name": "HTML y CSS avanzado",
+            "percentage": "85",
+            "sort_order": "1",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+    assert b"HTML y CSS avanzado" in response.data
+
+
+def test_admin_can_delete_skill(client):
+    _admin_login(client)
+
+    from app.models.skill import get_all_skills
+
+    skill = get_all_skills()[0]
+
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    response = client.post(
+        f"/admin/skills/{skill['id']}/delete",
+        data={"csrf_token": token},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+
+    from app.models.skill import get_skill_by_id
+
+    assert get_skill_by_id(skill["id"]) is None
+
+
+def test_skills_admin_requires_login(client):
+    response = client.get("/admin/skills")
+
+    assert response.status_code == 302
+    assert "/admin/login" in response.headers["Location"]
+
+
+def test_home_displays_skills_from_database(client):
+    from app.models.skill import get_all_skills
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+
+    skills = get_all_skills()
+    assert len(skills) > 0
+
+    for skill in skills:
+        assert skill["name"].encode("utf-8") in response.data
+        assert (
+            f'{skill["percentage"]}%'.encode("utf-8")
+            in response.data
+        )
+
+
+def test_new_skill_appears_on_public_homepage(client):
+    _admin_login(client)
+
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    response = client.post(
+        "/admin/skills/new",
+        data={
+            "csrf_token": token,
+            "name": "Docker",
+            "percentage": "40",
+            "sort_order": "7",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+
+    homepage = client.get("/")
+
+    assert homepage.status_code == 200
+    assert b"Docker" in homepage.data
+    assert b"40%" in homepage.data

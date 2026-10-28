@@ -295,70 +295,48 @@
 </section>
 
 
+
 <section class="content-section section-shell" id="habilidades">
     <div class="section-heading reveal">
         <p class="eyebrow">TECNOLOGÍAS</p>
-        <h2>Mis <span class="gradient-text">habilidades</span></h2>
+
+        <h2>
+            Mis <span class="gradient-text">habilidades</span>
+        </h2>
+
         <p>
             Tecnologías que he explorado durante mi formación y mis proyectos.
-            Los porcentajes son referenciales.
+            Los porcentajes representan mi nivel actual de conocimiento.
         </p>
     </div>
 
     <div class="skills-grid skills-progress-grid">
+        {% for skill in skills %}
         <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 80"
-                 role="img" aria-label="HTML y CSS: 80 por ciento">
-                <div class="skill-progress-inner"><span>80%</span></div>
-            </div>
-            <h3>HTML y CSS</h3>
-            <p>Estructura, estilos y diseño adaptable.</p>
-        </article>
 
-        <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 55"
-                 role="img" aria-label="MySQL: 55 por ciento">
-                <div class="skill-progress-inner"><span>55%</span></div>
+            <div
+                class="skill-progress"
+                style="--progress: {{ skill.percentage }}"
+                role="img"
+                aria-label="{{ skill.name }}: {{ skill.percentage }} por ciento"
+            >
+                <div class="skill-progress-inner">
+                    <span>{{ skill.percentage }}%</span>
+                </div>
             </div>
-            <h3>MySQL</h3>
-            <p>Consultas SQL y fundamentos de bases de datos.</p>
-        </article>
 
-        <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 45"
-                 role="img" aria-label="PHP: 45 por ciento">
-                <div class="skill-progress-inner"><span>45%</span></div>
-            </div>
-            <h3>PHP</h3>
-            <p>Fundamentos de programación del lado del servidor.</p>
-        </article>
+            <h3>{{ skill.name }}</h3>
 
-        <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 60"
-                 role="img" aria-label="Python y Flask: 60 por ciento">
-                <div class="skill-progress-inner"><span>60%</span></div>
-            </div>
-            <h3>Python y Flask</h3>
-            <p>Rutas, plantillas y aplicaciones web.</p>
-        </article>
+            <p>
+                Habilidad gestionada desde el panel de administración.
+            </p>
 
-        <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 50"
-                 role="img" aria-label="JavaScript: 50 por ciento">
-                <div class="skill-progress-inner"><span>50%</span></div>
-            </div>
-            <h3>JavaScript</h3>
-            <p>Interactividad y manipulación del DOM.</p>
         </article>
-
-        <article class="surface-card skill-card skill-progress-card reveal">
-            <div class="skill-progress" style="--progress: 55"
-                 role="img" aria-label="Git y GitHub: 55 por ciento">
-                <div class="skill-progress-inner"><span>55%</span></div>
-            </div>
-            <h3>Git y GitHub</h3>
-            <p>Control de versiones y publicación de proyectos.</p>
-        </article>
+        {% else %}
+        <p class="empty-state">
+            Todavía no hay habilidades registradas.
+        </p>
+        {% endfor %}
     </div>
 </section>
 

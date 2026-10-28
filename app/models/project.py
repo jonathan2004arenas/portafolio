@@ -1,6 +1,3 @@
-
-# app/models/project.py
-
 import json
 
 from app.database import get_db_connection

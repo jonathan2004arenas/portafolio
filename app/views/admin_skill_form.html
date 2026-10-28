@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form_title }} | Administración</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .admin-form-page {
+            max-width: 650px;
+            margin: 3rem auto;
+            padding: 1.5rem;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .admin-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: .4rem;
+        }
+
+        .admin-form input:not([type="hidden"]) {
+            width: 100%;
+            box-sizing: border-box;
+            padding: .8rem;
+            border: 1px solid #8888;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        .admin-form-actions {
+            display: flex;
+            gap: .8rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-form-actions button,
+        .admin-form-actions a {
+            padding: .8rem 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main class="admin-form-page">
+        <h1>{{ form_title }}</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p role="alert">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form
+            class="admin-form"
+            method="POST"
+            action="{% if skill %}{{ url_for('admin.edit_skill_view', skill_id=skill.id) }}{% else %}{{ url_for('admin.create_skill_view') }}{% endif %}"
+        >
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <div>
+                <label for="name">Nombre de la habilidad *</label>
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    maxlength="100"
+                    value="{{ skill.name if skill else '' }}"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="percentage">Porcentaje (0–100) *</label>
+                <input
+                    id="percentage"
+                    name="percentage"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value="{{ skill.percentage if skill else 50 }}"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="sort_order">Orden de visualización</label>
+                <input
+                    id="sort_order"
+                    name="sort_order"
+                    type="number"
+                    min="0"
+                    value="{{ skill.sort_order if skill else 0 }}"
+                    required
+                >
+                <small>Los números menores aparecen primero.</small>
+            </div>
+
+            <div class="admin-form-actions">
+                <button type="submit">
+                    {{ "Guardar cambios" if skill else "Crear habilidad" }}
+                </button>
+
+                <a href="{{ url_for('admin.skills_list') }}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

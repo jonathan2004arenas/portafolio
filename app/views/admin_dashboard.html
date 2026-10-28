@@ -62,6 +62,17 @@
             {% endfor %}
         {% endwith %}
 
+        
+        <section>
+            <h2>Contenido del portafolio</h2>
+            <p>
+                <a href="{{ url_for('admin.skills_list') }}">
+                    Administrar habilidades
+                </a>
+            </p>
+        </section>
+
+
         <section>
             <h2>Proyectos registrados</h2>
             <p>
@@ -90,16 +101,33 @@
                                 <td>{{ project.technologies|join(', ') }}</td>
                                 <td>
                                     {{ "Sí" if project.featured else "No" }}
-                                </td>
+                                </td>                                 
                                 <td>
                                     <a href="{{ url_for('admin.edit_project_view', project_id=project.id) }}">
                                         Editar
                                     </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('admin.delete_project_view', project_id=project.id) }}"
+                                        onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Esta acción no se puede deshacer.');"
+                                        style="display: inline;"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="{{ csrf_token() }}"
+                                        >
+
+                                        <button type="submit">
+                                            Eliminar
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="4">No hay proyectos registrados.</td>
+                                <td colspan="5">No hay proyectos registrados.</td>
                             </tr>
                         {% endfor %}
                     </tbody>

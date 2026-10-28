@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habilidades | Administración</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .admin-page {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 1.5rem;
+        }
+
+        .admin-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-table-wrapper {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: .9rem;
+            text-align: left;
+            border-bottom: 1px solid #8884;
+        }
+
+        .admin-table form {
+            display: inline;
+        }
+
+        .admin-action {
+            padding: .6rem .9rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main class="admin-page">
+        <header class="admin-header">
+            <div>
+                <h1>Administrar habilidades</h1>
+                <p>Gestiona las tecnologías y sus porcentajes.</p>
+            </div>
+
+            <a href="{{ url_for('admin.create_skill_view') }}">
+                + Añadir habilidad
+            </a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p role="status">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Porcentaje</th>
+                        <th>Orden</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for skill in skills %}
+                        <tr>
+                            <td>{{ skill.name }}</td>
+                            <td>{{ skill.percentage }}%</td>
+                            <td>{{ skill.sort_order }}</td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_skill_view', skill_id=skill.id) }}">
+                                    Editar
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('admin.delete_skill_view', skill_id=skill.id) }}"
+                                    onsubmit="return confirm('¿Seguro que deseas eliminar esta habilidad?');"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+                                    <button class="admin-action" type="submit">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">Todavía no hay habilidades.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p><a href="{{ url_for('admin.dashboard') }}">Volver al panel</a></p>
+    </main>
+</body>
+</html>

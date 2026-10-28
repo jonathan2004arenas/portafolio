@@ -76,5 +76,64 @@ def init_db(app):
 
                 connection.commit()
 
+            
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS skills (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL UNIQUE,
+                    percentage INTEGER NOT NULL DEFAULT 0
+                        CHECK (percentage BETWEEN 0 AND 100),
+                    sort_order INTEGER NOT NULL DEFAULT 0
+                )
+                """
+            )
+
+            connection.commit()
+
+            # Cargar las habilidades iniciales solo si la tabla está vacía.
+            skills_count = connection.execute(
+                "SELECT COUNT(*) FROM skills"
+            ).fetchone()[0]
+
+            if skills_count == 0:
+                initial_skills = [
+                    ("HTML y CSS", 80, 1),
+                    ("MySQL", 55, 2),
+                    ("PHP", 45, 3),
+                    ("Python y Flask", 60, 4),
+                    ("JavaScript", 50, 5),
+                    ("Git y GitHub", 55, 6),
+                ]
+
+                connection.executemany(
+                    """
+                    INSERT INTO skills (name, percentage, sort_order)
+                    VALUES (?, ?, ?)
+                    """,
+                    initial_skills,
+                )
+
+                connection.commit()
+
+            
+            # Crear la tabla de experiencias profesionales y proyectos.
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS experiences (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title TEXT NOT NULL,
+                    organization TEXT NOT NULL,
+                    start_date TEXT NOT NULL DEFAULT '',
+                    end_date TEXT NOT NULL DEFAULT '',
+                    description TEXT NOT NULL,
+                    technologies TEXT NOT NULL DEFAULT '[]',
+                    sort_order INTEGER NOT NULL DEFAULT 0
+                )
+                """
+            )
+            connection.commit()
+
+
         finally:
             connection.close()
