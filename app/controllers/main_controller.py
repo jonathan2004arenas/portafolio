@@ -1,5 +1,7 @@
+
 from flask import Blueprint, render_template
 
+from app.models.experience import get_all_experiences
 from app.models.project import get_featured_projects
 from app.models.skill import get_all_skills
 
@@ -12,7 +14,9 @@ def home():
         "index.html",
         featured_projects=get_featured_projects(),
         skills=get_all_skills(),
+        experiences=get_all_experiences(),
     )
+
 
 @main_bp.route("/contacto")
 def contact():

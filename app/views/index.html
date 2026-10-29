@@ -209,88 +209,51 @@
         <p>Mi aprendizaje, mis proyectos y mi crecimiento profesional.</p>
     </div>
 
+    
     <div class="timeline timeline-modern">
+        {% for experience in experiences %}
         <article class="timeline-item reveal">
             <span class="timeline-marker"></span>
-            <div class="surface-card timeline-card">
-                <div class="timeline-card-top">
-                    <span class="timeline-date">2025 – ACTUALIDAD</span>
-                    <span class="timeline-type">Proyecto personal</span>
-                </div>
-                <h3>Desarrollo de proyectos web</h3>
-                <p class="timeline-place">Práctica independiente</p>
-                <p>
-                    Desarrollo de páginas web para practicar diseño adaptable,
-                    estructura HTML, estilos CSS e interactividad con JavaScript.
-                </p>
-                <div class="tags">
-                    <span class="tag">HTML</span>
-                    <span class="tag">CSS</span>
-                    <span class="tag">JavaScript</span>
-                </div>
-                <p class="example-note">
-                    Ejemplo de diseño: edita o elimina esta tarjeta según tu experiencia real.
-                </p>
-            </div>
-        </article>
 
-        <article class="timeline-item reveal">
-            <span class="timeline-marker"></span>
             <div class="surface-card timeline-card">
                 <div class="timeline-card-top">
-                    <span class="timeline-date">EN CURSO</span>
-                    <span class="timeline-type">Formación técnica</span>
+                    <span class="timeline-date">
+                        {% if experience.start_date %}
+                            {{ experience.start_date }}
+                        {% else %}
+                            Sin fecha de inicio
+                        {% endif %}
+                        –
+                        {{ experience.end_date or "Actualidad" }}
+                    </span>
+
+                    <span class="timeline-type">
+                        {{ experience.category }}
+                    </span>
                 </div>
-                <h3>Tecnólogo en Análisis y Desarrollo de Software</h3>
+
+                <h3>{{ experience.title }}</h3>
+
                 <p class="timeline-place">
-                    Servicio Nacional de Aprendizaje — SENA
+                    {{ experience.organization }}
                 </p>
-                <p>
-                    Formación en fundamentos de programación, desarrollo
-                    de aplicaciones y construcción de soluciones de software.
-                </p>
-                <div class="tags">
-                    <span class="tag">Programación</span>
-                    <span class="tag">Desarrollo de software</span>
-                </div>
-            </div>
-        </article>
 
-        <article class="timeline-item reveal">
-            <span class="timeline-marker"></span>
-            <div class="surface-card timeline-card">
-                <div class="timeline-card-top">
-                    <span class="timeline-date">EN CURSO</span>
-                    <span class="timeline-type">Idiomas</span>
-                </div>
-                <h3>Formación en inglés</h3>
-                <p class="timeline-place">Academia Smart</p>
-                <p>
-                    Formación complementaria para fortalecer la comunicación
-                    y continuar aprendiendo sobre tecnología.
-                </p>
-                <div class="tags">
-                    <span class="tag">Inglés</span>
-                    <span class="tag">Aprendizaje continuo</span>
-                </div>
-            </div>
-        </article>
+                <p>{{ experience.description }}</p>
 
-        <article class="timeline-item reveal">
-            <span class="timeline-marker"></span>
-            <div class="surface-card timeline-card">
-                <div class="timeline-card-top">
-                    <span class="timeline-date">2009 – 2021</span>
-                    <span class="timeline-type">Educación</span>
-                </div>
-                <h3>Bachiller académico</h3>
-                <p class="timeline-place">Colegio República de China</p>
-                <p>Formación académica de educación básica y media.</p>
+                {% if experience.technologies %}
                 <div class="tags">
-                    <span class="tag">Educación secundaria</span>
+                    {% for technology in experience.technologies %}
+                    <span class="tag">{{ technology }}</span>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
         </article>
+        {% else %}
+        <p class="empty-state">
+            Todavía no hay experiencias o formación registradas.
+        </p>
+        {% endfor %}
     </div>
 </section>
 

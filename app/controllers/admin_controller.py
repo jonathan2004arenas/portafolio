@@ -399,3 +399,180 @@ def delete_skill_view(skill_id):
 
     flash("Habilidad eliminada correctamente.", "success")
     return redirect(url_for("admin.skills_list"))
+
+
+def _get_experience_form_data():
+    """Valida los datos enviados desde el formulario de experiencias."""
+    title = request.form.get("title", "").strip()
+    organization = request.form.get("organization", "").strip()
+    start_date = request.form.get("start_date", "").strip()
+    end_date = request.form.get("end_date", "").strip()
+    description = request.form.get("description", "").strip()
+    technologies_text = request.form.get("technologies", "")
+    sort_order_text = request.form.get("sort_order", "0")
+    category = request.form.get("category", "").strip()
+
+    allowed_categories = {
+        "Experiencia laboral",
+        "Formación académica",
+        "Formación complementaria",
+        "Proyecto personal",
+    }
+
+    if category not in allowed_categories:
+        return None, "Selecciona una categoría válida."
+
+    technologies = [
+        technology.strip()
+        for technology in technologies_text.split(",")
+        if technology.strip()
+    ]
+
+    if not title or not organization or not description:
+        return None
+
+    try:
+        sort_order = int(sort_order_text)
+    except (TypeError, ValueError):
+        return None
+
+    if sort_order < 0:
+        return None
+
+    return {
+        "title": title,
+        "organization": organization,
+        "start_date": start_date,
+        "end_date": end_date,
+        "description": description,
+        "technologies": technologies,
+        "sort_order": sort_order,
+        "category": category,
+    }
+
+
+@admin_bp.route("/experiences")
+@login_required
+def experiences_list():
+    from app.models.experience import get_all_experiences
+
+    return render_template(
+        "admin_experiences.html",
+        experiences=get_all_experiences(),
+    )
+
+
+@admin_bp.route("/experiences/new", methods=["GET", "POST"])
+@login_required
+def create_experience_view():
+    from app.models.experience import create_experience
+
+    if request.method == "POST":
+        validate_csrf()
+        data = _get_experience_form_data()
+
+        if data is None:
+            flash(
+                "Revisa los campos obligatorios y el orden de visualización.",
+                "error",
+            )
+            return render_template(
+                "admin_experience_form.html",
+                experience=None,
+                form_title="Crear experiencia",
+            ), 400
+
+        try:
+            create_experience(data)
+        except Exception:
+            current_app.logger.exception(
+                "No se pudo crear la experiencia."
+            )
+            flash("No se pudo guardar la experiencia.", "error")
+            return render_template(
+                "admin_experience_form.html",
+                experience=None,
+                form_title="Crear experiencia",
+            ), 400
+
+        flash("Experiencia creada correctamente.", "success")
+        return redirect(url_for("admin.experiences_list"))
+
+    return render_template(
+        "admin_experience_form.html",
+        experience=None,
+        form_title="Crear experiencia",
+    )
+
+
+@admin_bp.route(
+    "/experiences/<int:experience_id>/edit",
+    methods=["GET", "POST"],
+)
+@login_required
+def edit_experience_view(experience_id):
+    from app.models.experience import (
+        get_experience_by_id,
+        update_experience,
+    )
+
+    experience = get_experience_by_id(experience_id)
+
+    if experience is None:
+        abort(404)
+
+    if request.method == "POST":
+        validate_csrf()
+        data = _get_experience_form_data()
+
+        if data is None:
+            flash(
+                "Revisa los campos obligatorios y el orden de visualización.",
+                "error",
+            )
+            return render_template(
+                "admin_experience_form.html",
+                experience=experience,
+                form_title="Editar experiencia",
+            ), 400
+
+        updated = update_experience(experience_id, data)
+
+        if updated is None:
+            abort(404)
+
+        flash("Experiencia actualizada correctamente.", "success")
+        return redirect(url_for("admin.experiences_list"))
+
+    return render_template(
+        "admin_experience_form.html",
+        experience=experience,
+        form_title="Editar experiencia",
+    )
+
+
+@admin_bp.route(
+    "/experiences/<int:experience_id>/delete",
+    methods=["POST"],
+)
+@login_required
+def delete_experience_view(experience_id):
+    from app.models.experience import (
+        delete_experience,
+        get_experience_by_id,
+    )
+
+    experience = get_experience_by_id(experience_id)
+
+    if experience is None:
+        abort(404)
+
+    validate_csrf()
+
+    deleted = delete_experience(experience_id)
+
+    if not deleted:
+        abort(404)
+
+    flash("Experiencia eliminada correctamente.", "success")
+    return redirect(url_for("admin.experiences_list"))

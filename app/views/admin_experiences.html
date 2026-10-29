@@ -1,0 +1,97 @@
+
+{% extends "base.html" %}
+
+{% block title %}Administrar experiencias | Panel{% endblock %}
+
+{% block content %}
+<section class="content-section section-shell">
+    <div class="section-heading">
+        <p class="eyebrow">PANEL DE ADMINISTRACIÓN</p>
+        <h1>Administrar <span class="gradient-text">experiencias</span></h1>
+        <p>Gestiona tu experiencia profesional, proyectos personales y formación.</p>
+    </div>
+
+    <div class="section-action">
+        <a class="button button-primary"
+           href="{{ url_for('admin.create_experience_view') }}">
+            + Nueva experiencia
+        </a>
+
+        <a class="button button-secondary"
+           href="{{ url_for('admin.dashboard') }}">
+            Volver al panel
+        </a>
+    </div>
+
+    {% if experiences %}
+        <div class="project-grid">
+            {% for experience in experiences %}
+                <article class="surface-card project-body">
+                    <span class="card-kicker">
+                        {{ "%02d" | format(loop.index) }} / EXPERIENCIA
+                    </span>
+
+                    <h2>{{ experience.title }}</h2>
+
+                    <p class="timeline-place">
+                        {{ experience.organization }}
+                    </p>
+
+                    <p class="timeline-type">{{ experience.category }}</p>
+
+                    <p>
+                        {{ experience.start_date or "Sin fecha de inicio" }}
+                        –
+                        {{ experience.end_date or "Actualidad" }}
+                    </p>
+
+                    <p>{{ experience.description }}</p>
+
+                    {% if experience.technologies %}
+                        <div class="tags">
+                            {% for technology in experience.technologies %}
+                                <span class="tag">{{ technology }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <p>
+                        <small>Orden: {{ experience.sort_order }}</small>
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="button button-secondary"
+                           href="{{ url_for(
+                               'admin.edit_experience_view',
+                               experience_id=experience.id
+                           ) }}">
+                            Editar
+                        </a>
+
+                        <form method="POST"
+                              action="{{ url_for(
+                                  'admin.delete_experience_view',
+                                  experience_id=experience.id
+                              ) }}"
+                              onsubmit="return confirm('¿Seguro que deseas eliminar esta experiencia?');">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button class="button button-secondary"
+                                    type="submit">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="surface-card about-card">
+            <h2>Aún no hay experiencias registradas</h2>
+            <p>Agrega tu primera experiencia con el botón de arriba.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

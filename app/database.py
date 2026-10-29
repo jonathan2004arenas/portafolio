@@ -128,11 +128,112 @@ def init_db(app):
                     end_date TEXT NOT NULL DEFAULT '',
                     description TEXT NOT NULL,
                     technologies TEXT NOT NULL DEFAULT '[]',
-                    sort_order INTEGER NOT NULL DEFAULT 0
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    category TEXT NOT NULL DEFAULT 'Proyecto personal'
                 )
                 """
             )
             connection.commit()
+
+            
+            # Cargar las experiencias iniciales solo si la tabla está vacía.
+            experience_count = connection.execute(
+                "SELECT COUNT(*) FROM experiences"
+            ).fetchone()[0]
+
+            if experience_count == 0:
+                initial_experiences = [
+                    (
+                        "Desarrollo de proyectos web",
+                        "Práctica independiente",
+                        "2025",
+                        "Actualidad",
+                        (
+                            "Desarrollo de páginas web para practicar diseño "
+                            "adaptable, estructura HTML, estilos CSS e "
+                            "interactividad con JavaScript."
+                        ),
+                        ["HTML", "CSS", "JavaScript"],
+                        1,
+                        "Proyecto personal",
+                    ),
+                    (
+                        "Tecnólogo en Análisis y Desarrollo de Software",
+                        "Servicio Nacional de Aprendizaje — SENA",
+                        "",
+                        "Actualidad",
+                        (
+                            "Formación en fundamentos de programación, "
+                            "desarrollo de aplicaciones y construcción "
+                            "de soluciones de software."
+                        ),
+                        ["Programación", "Desarrollo de software"],
+                        2,
+                        "Formacion academica",
+                    ),
+                    (
+                        "Formación en inglés",
+                        "Academia Smart",
+                        "",
+                        "Actualidad",
+                        (
+                            "Formación complementaria para fortalecer la "
+                            "comunicación y continuar aprendiendo sobre tecnología."
+                        ),
+                        ["Inglés", "Aprendizaje continuo"],
+                        3,
+                        "Formacion complementaria",
+                    ),
+                    (
+                        "Bachiller académico",
+                        "Colegio República de China",
+                        "2009",
+                        "2021",
+                        "Formación académica de educación básica y media.",
+                        ["Educación secundaria"],
+                        4,
+                        "Formacion academica",
+                    ),
+                ]
+
+                connection.executemany(
+                    """
+                    INSERT INTO experiences (
+                        title,
+                        organization,
+                        start_date,
+                        end_date,
+                        description,
+                        technologies,
+                        sort_order,
+                        category
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    [
+                        (
+                            title,
+                            organization,
+                            start_date,
+                            end_date,
+                            description,
+                            json.dumps(technologies, ensure_ascii=False),
+                            sort_order,
+                            category
+                        )
+                        for (
+                            title,
+                            organization,
+                            start_date,
+                            end_date,
+                            description,
+                            technologies,
+                            sort_order,
+                            category
+                        ) in initial_experiences
+                    ],
+                )
+                connection.commit()
 
 
         finally:

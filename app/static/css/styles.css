@@ -746,14 +746,15 @@ a:focus-visible {
 }
 
 .project-body h3 {
-    margin: 8px 0;
-    font-size: 1.3rem;
+    margin: 8px 0 4px;
+    font-size: 1.15rem;
 }
 
 .project-body p {
-    min-height: 70px;
+    margin-top: 5px;
+    /* min-height: 70px; */
     color: var(--muted);
-    font-size: 0.9rem;
+    /* font-size: 0.9rem; */
 }
 
 .section-action {

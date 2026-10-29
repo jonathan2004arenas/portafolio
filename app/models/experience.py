@@ -68,9 +68,10 @@ def create_experience(data):
                 end_date,
                 description,
                 technologies,
-                sort_order
+                sort_order,
+                category
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 data["title"].strip(),
@@ -83,6 +84,7 @@ def create_experience(data):
                     ensure_ascii=False,
                 ),
                 int(data.get("sort_order", 0)),
+                data["category"].strip(),
             ),
         )
 
@@ -112,7 +114,8 @@ def update_experience(experience_id, data):
                 end_date = ?,
                 description = ?,
                 technologies = ?,
-                sort_order = ?
+                sort_order = ?,
+                category = ?
             WHERE id = ?
             """,
             (
@@ -126,6 +129,7 @@ def update_experience(experience_id, data):
                     ensure_ascii=False,
                 ),
                 int(data.get("sort_order", 0)),
+                data["category"].strip(),
                 experience_id,
             ),
         )

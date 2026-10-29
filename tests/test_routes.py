@@ -396,3 +396,64 @@ def test_new_skill_appears_on_public_homepage(client):
     assert homepage.status_code == 200
     assert b"Docker" in homepage.data
     assert b"40%" in homepage.data
+
+
+
+def test_home_displays_experiences_from_database(client):
+    from app.models.experience import get_all_experiences
+
+    # Consultar la base de datos dentro del contexto de Flask.
+    with client.application.app_context():
+        experiences = get_all_experiences()
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert len(experiences) == 4
+
+    for experience in experiences:
+        assert experience["title"].encode("utf-8") in response.data
+        assert experience["organization"].encode("utf-8") in response.data
+
+
+def test_admin_can_list_experiences(client):
+    _admin_login(client)
+
+    response = client.get("/admin/experiences")
+
+    assert response.status_code == 200
+    assert b"Administrar" in response.data
+    assert b"Desarrollo de proyectos web" in response.data
+
+
+def test_new_experience_appears_on_public_homepage(client):
+    _admin_login(client)
+
+    with client.session_transaction() as session:
+        token = session["_csrf_token"]
+
+    response = client.post(
+        "/admin/experiences/new",
+        data={
+            "csrf_token": token,
+            "title": "Aplicación de prueba",
+            "organization": "Proyecto personal",
+            "start_date": "Octubre de 2026",
+            "end_date": "Actualidad",
+            "description": "Experiencia creada desde el panel administrativo.",
+            "technologies": "Python, Flask, SQLite",
+            "sort_order": "5",
+            "category": "Proyecto personal",
+        },
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 200
+
+    homepage = client.get("/")
+
+    assert homepage.status_code == 200
+    assert "Aplicación de prueba".encode("utf-8") in homepage.data
+    assert "Proyecto personal".encode("utf-8") in homepage.data
+    assert b"Python" in homepage.data
+    assert b"SQLite" in homepage.data
