@@ -1,149 +1,427 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración | Portafolio</title>
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        .admin-page {
-            max-width: 1100px;
-            margin: 3rem auto;
-            padding: 1.5rem;
-        }
-        .admin-header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-        .admin-table-wrapper {
-            overflow-x: auto;
-            margin-top: 1.5rem;
-        }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .admin-table th,
-        .admin-table td {
-            padding: .9rem;
-            text-align: left;
-            border-bottom: 1px solid #8884;
-        }
-        .admin-action {
-            padding: .65rem 1rem;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <main class="admin-page">
-        <header class="admin-header">
-            <div>
-                <h1>Panel de administración</h1>
-                <p>Gestiona el contenido de tu portafolio.</p>
+{% block title %}Panel de administración | Jonathan Arenas{% endblock %}
+
+{% block content %}
+
+<section class="admin-dashboard section-shell">
+
+    <header class="admin-dashboard-header">
+        <div>
+            <p class="eyebrow">PANEL DE ADMINISTRACIÓN</p>
+            <h1>Gestiona tu <span class="gradient-text">portafolio</span></h1>
+            <p>
+                Administra tus habilidades, experiencias, estudios y proyectos
+                desde un solo lugar.
+            </p>
+        </div>
+
+        <a class="button button-secondary"
+           href="{{ url_for('admin.logout') }}">
+            Cerrar sesión
+        </a>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="admin-flash" role="status">
+                {{ message }}
             </div>
-
-            <form method="POST" action="{{ url_for('admin.logout') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="admin-action" type="submit">
-                    Cerrar sesión
-                </button>
-            </form>
-        </header>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <p role="status">{{ message }}</p>
-            {% endfor %}
-        {% endwith %}
-
-        
-        <section>
-            <h2>Contenido del portafolio</h2>
-            <p>
-                <a href="{{ url_for('admin.skills_list') }}">
-                    Administrar habilidades
-                </a>
-            </p>
-        </section>
+        {% endfor %}
+    {% endwith %}
 
 
-        <section>
-            <h2>Proyectos registrados</h2>
-            <p>
-                <a href="{{ url_for('admin.create_project_view') }}">
-                    + Crear nuevo proyecto
-                </a>
-            </p>
-            <p>Total de proyectos: {{ projects|length }}</p>
+    <!-- PESTAÑAS -->
 
-            <div class="admin-table-wrapper">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Proyecto</th>
-                            <th>Tecnologías</th>
-                            <th>Destacado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for project in projects %}
-                            <tr>
-                                <td>{{ project.id }}</td>
-                                <td>{{ project.title }}</td>
-                                <td>{{ project.technologies|join(', ') }}</td>
-                                <td>
-                                    {{ "Sí" if project.featured else "No" }}
-                                </td>                                 
-                                <td>
-                                    <a href="{{ url_for('admin.edit_project_view', project_id=project.id) }}">
-                                        Editar
-                                    </a>
+    <div class="admin-tabs"
+         role="tablist"
+         aria-label="Secciones de administración">
 
-                                    <form
-                                        method="POST"
-                                        action="{{ url_for('admin.delete_project_view', project_id=project.id) }}"
-                                        onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Esta acción no se puede deshacer.');"
-                                        style="display: inline;"
-                                    >
-                                        <input
-                                            type="hidden"
-                                            name="csrf_token"
-                                            value="{{ csrf_token() }}"
-                                        >
+        <button
+            class="admin-tab is-active"
+            id="tab-skills"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-skills"
+            data-admin-tab="skills">
+            <span>01</span>
+            Administrar habilidades
+            <small>{{ skills|length }}</small>
+        </button>
 
-                                        <button type="submit">
-                                            Eliminar
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="5">No hay proyectos registrados.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <button
+            class="admin-tab"
+            id="tab-experiences"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-experiences"
+            data-admin-tab="experiences"
+            tabindex="-1">
+            <span>02</span>
+            Experiencia y estudios
+            <small>{{ experiences|length }}</small>
+        </button>
 
-            <p>
-                Esta es la primera versión del panel. En el siguiente paso
-                añadiremos los formularios para crear, editar y eliminar
-                proyectos.
-            </p>
-        </section>
+        <button
+            class="admin-tab"
+            id="tab-projects"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-projects"
+            data-admin-tab="projects"
+            tabindex="-1">
+            <span>03</span>
+            Proyectos
+            <small>{{ projects|length }}</small>
+        </button>
 
-        <p>
-            <a href="{{ url_for('main.home') }}">Ver portafolio público</a>
+    </div>
+
+
+    <!-- BUSCADOR -->
+
+    <div class="admin-toolbar">
+        <div class="admin-search">
+            <span aria-hidden="true">⌕</span>
+
+            <input
+                type="search"
+                id="admin-search"
+                placeholder="Buscar en esta sección..."
+                autocomplete="off"
+                aria-label="Buscar registros">
+        </div>
+
+        <p id="admin-results-count" aria-live="polite">
+            {{ skills|length }} registros
         </p>
-    </main>
-</body>
-</html>
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- HABILIDADES -->
+    <!-- ================================= -->
+
+    <section
+        class="admin-panel"
+        id="panel-skills"
+        role="tabpanel"
+        aria-labelledby="tab-skills"
+        data-admin-panel="skills">
+
+        <div class="admin-panel-heading">
+            <div>
+                <p class="card-kicker">GESTIÓN DE CONTENIDO</p>
+                <h2>Mis habilidades</h2>
+                <p>Administra las tecnologías y sus porcentajes.</p>
+            </div>
+
+            <a class="button button-primary"
+               href="{{ url_for('admin.create_skill_view') }}">
+                + Añadir habilidad
+            </a>
+        </div>
+
+        <div class="admin-records">
+
+            {% for skill in skills %}
+
+                <article
+                    class="surface-card project-body admin-record"
+                    data-search-item
+                    data-search="{{ (skill.name ~ ' ' ~ skill.percentage ~ ' ' ~ skill.sort_order)|lower }}">
+
+                    <div class="admin-record-main">
+                        <div>
+                            <span class="card-kicker">HABILIDAD</span>
+                            <h3>{{ skill.name }}</h3>
+                        </div>
+
+                        <span class="admin-record-value">
+                            {{ skill.percentage }}%
+                        </span>
+                    </div>
+
+                    <div class="admin-progress">
+                        <span style="width: {{ skill.percentage }}%"></span>
+                    </div>
+
+                    <p class="admin-record-meta">
+                        Orden de visualización: {{ skill.sort_order }}
+                    </p>
+
+                    <div class="admin-record-actions">
+
+                        <a
+                            class="button button-secondary"
+                            href="{{ url_for('admin.edit_skill_view', skill_id=skill.id) }}">
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('admin.delete_skill_view', skill_id=skill.id) }}"
+                            onsubmit="return confirm('¿Seguro que deseas eliminar esta habilidad?');">
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}">
+
+                            <button
+                                class="button button-danger"
+                                type="submit">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% else %}
+
+                <div class="surface-card project-body admin-empty">
+                    <h3>Aún no hay habilidades</h3>
+                    <p>Agrega tu primera habilidad para comenzar.</p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <p class="admin-no-results" hidden>
+            No se encontraron habilidades con esa búsqueda.
+        </p>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- EXPERIENCIAS Y ESTUDIOS -->
+    <!-- ================================= -->
+
+    <section
+        class="admin-panel"
+        id="panel-experiences"
+        role="tabpanel"
+        aria-labelledby="tab-experiences"
+        data-admin-panel="experiences"
+        hidden>
+
+        <div class="admin-panel-heading">
+            <div>
+                <p class="card-kicker">GESTIÓN DE CONTENIDO</p>
+                <h2>Experiencia y estudios</h2>
+                <p>Administra tu trayectoria profesional y académica.</p>
+            </div>
+
+            <a class="button button-primary"
+               href="{{ url_for('admin.create_experience_view') }}">
+                + Nueva experiencia
+            </a>
+        </div>
+
+        <div class="admin-records">
+
+            {% for experience in experiences %}
+
+                <article
+                    class="surface-card project-body admin-record"
+                    data-search-item
+                    data-search="{{ (experience.title ~ ' ' ~ experience.organization ~ ' ' ~ experience.category ~ ' ' ~ experience.description ~ ' ' ~ (experience.technologies|join(' ')))|lower }}">
+
+                    <div class="admin-record-main">
+                        <div>
+                            <span class="card-kicker">
+                                {{ experience.category }}
+                            </span>
+
+                            <h3>{{ experience.title }}</h3>
+                        </div>
+
+                        <span class="admin-record-number">
+                            {{ "%02d"|format(loop.index) }}
+                        </span>
+                    </div>
+
+                    <p class="timeline-place">
+                        {{ experience.organization }}
+                    </p>
+
+                    <p class="admin-record-meta">
+                        {{ experience.start_date or "Sin fecha de inicio" }}
+                        –
+                        {{ experience.end_date or "Actualidad" }}
+                    </p>
+
+                    <p>{{ experience.description }}</p>
+
+                    {% if experience.technologies %}
+                        <div class="tags">
+                            {% for technology in experience.technologies %}
+                                <span class="tag">{{ technology }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <p class="admin-record-meta">
+                        Orden de visualización: {{ experience.sort_order }}
+                    </p>
+
+                    <div class="admin-record-actions">
+
+                        <a
+                            class="button button-secondary"
+                            href="{{ url_for('admin.edit_experience_view', experience_id=experience.id) }}">
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('admin.delete_experience_view', experience_id=experience.id) }}"
+                            onsubmit="return confirm('¿Seguro que deseas eliminar esta experiencia?');">
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}">
+
+                            <button
+                                class="button button-danger"
+                                type="submit">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% else %}
+
+                <div class="surface-card project-body admin-empty">
+                    <h3>Aún no hay experiencias registradas</h3>
+                    <p>Agrega tu primera experiencia o formación.</p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <p class="admin-no-results" hidden>
+            No se encontraron experiencias con esa búsqueda.
+        </p>
+
+    </section>
+
+
+    <!-- ================================= -->
+    <!-- PROYECTOS -->
+    <!-- ================================= -->
+
+    <section
+        class="admin-panel"
+        id="panel-projects"
+        role="tabpanel"
+        aria-labelledby="tab-projects"
+        data-admin-panel="projects"
+        hidden>
+
+        <div class="admin-panel-heading">
+            <div>
+                <p class="card-kicker">GESTIÓN DE CONTENIDO</p>
+                <h2>Mis proyectos</h2>
+                <p>Administra los proyectos que aparecen en tu portafolio.</p>
+            </div>
+
+            <a class="button button-primary"
+               href="{{ url_for('admin.create_project_view') }}">
+                + Nuevo proyecto
+            </a>
+        </div>
+
+        <div class="admin-records">
+
+            {% for project in projects %}
+
+                <article
+                    class="surface-card project-body admin-record"
+                    data-search-item
+                    data-search="{{ (project.title ~ ' ' ~ project.description ~ ' ' ~ (project.technologies|join(' ')))|lower }}">
+
+                    <div class="admin-record-main">
+                        <div>
+                            <span class="card-kicker">PROYECTO</span>
+                            <h3>{{ project.title }}</h3>
+                        </div>
+
+                        {% if project.featured %}
+                            <span class="admin-featured">
+                                Destacado
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <p>{{ project.description }}</p>
+
+                    {% if project.technologies %}
+                        <div class="tags">
+                            {% for technology in project.technologies %}
+                                <span class="tag">{{ technology }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="admin-record-actions">
+
+                        <a
+                            class="button button-secondary"
+                            href="{{ url_for('admin.edit_project_view', project_id=project.id) }}">
+                            Editar
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('admin.delete_project_view', project_id=project.id) }}"
+                            onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto?');">
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}">
+
+                            <button
+                                class="button button-danger"
+                                type="submit">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+
+            {% else %}
+
+                <div class="surface-card project-body admin-empty">
+                    <h3>Aún no hay proyectos</h3>
+                    <p>Agrega tu primer proyecto al portafolio.</p>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <p class="admin-no-results" hidden>
+            No se encontraron proyectos con esa búsqueda.
+        </p>
+
+    </section>
+
+</section>
+
+{% endblock %}

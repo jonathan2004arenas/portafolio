@@ -207,3 +207,139 @@ if (searchInput && technologyFilter) {
     searchInput.addEventListener("input", filterProjects);
     technologyFilter.addEventListener("change", filterProjects);
 }
+
+// ========================================
+// 7. PANEL DE ADMINISTRACIÓN
+// ========================================
+
+const adminTabs = document.querySelectorAll("[data-admin-tab]");
+const adminPanels = document.querySelectorAll("[data-admin-panel]");
+const adminSearch = document.querySelector("#admin-search");
+const adminResultsCount = document.querySelector("#admin-results-count");
+
+if (adminTabs.length > 0 && adminPanels.length > 0) {
+
+    function activateAdminTab(tabName) {
+        const selectedTab = document.querySelector(
+            `[data-admin-tab="${tabName}"]`
+        );
+
+        const selectedPanel = document.querySelector(
+            `[data-admin-panel="${tabName}"]`
+        );
+
+        if (!selectedTab || !selectedPanel) {
+            return;
+        }
+
+        adminTabs.forEach((tab) => {
+            const isActive = tab === selectedTab;
+
+            tab.classList.toggle("is-active", isActive);
+            tab.setAttribute("aria-selected", String(isActive));
+            tab.tabIndex = isActive ? 0 : -1;
+        });
+
+        adminPanels.forEach((panel) => {
+            panel.hidden = panel !== selectedPanel;
+        });
+
+        if (adminSearch) {
+            adminSearch.value = "";
+        }
+
+        filterAdminRecords();
+
+        // Permite conservar la pestaña seleccionada en la URL.
+        history.replaceState(null, "", `#${tabName}`);
+    }
+
+    function filterAdminRecords() {
+        const activePanel = document.querySelector(
+            "[data-admin-panel]:not([hidden])"
+        );
+
+        if (!activePanel) {
+            return;
+        }
+
+        const query = adminSearch
+            ? adminSearch.value.trim().toLowerCase()
+            : "";
+
+        const records = activePanel.querySelectorAll("[data-search-item]");
+        const noResults = activePanel.querySelector(".admin-no-results");
+
+        let visibleCount = 0;
+
+        records.forEach((record) => {
+            const searchableText = (
+                record.dataset.search || record.textContent
+            ).toLowerCase();
+
+            const matches = searchableText.includes(query);
+
+            record.hidden = !matches;
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (adminResultsCount) {
+            adminResultsCount.textContent =
+                `${visibleCount} ${
+                    visibleCount === 1 ? "registro encontrado" : "registros encontrados"
+                }`;
+        }
+
+        if (noResults) {
+            noResults.hidden = visibleCount !== 0;
+        }
+    }
+
+    adminTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            activateAdminTab(tab.dataset.adminTab);
+        });
+
+        tab.addEventListener("keydown", (event) => {
+            const currentIndex = Array.from(adminTabs).indexOf(tab);
+
+            let nextIndex = currentIndex;
+
+            if (event.key === "ArrowRight") {
+                nextIndex = (currentIndex + 1) % adminTabs.length;
+            } else if (event.key === "ArrowLeft") {
+                nextIndex =
+                    (currentIndex - 1 + adminTabs.length) % adminTabs.length;
+            } else {
+                return;
+            }
+
+            event.preventDefault();
+
+            const nextTab = adminTabs[nextIndex];
+
+            activateAdminTab(nextTab.dataset.adminTab);
+            nextTab.focus();
+        });
+    });
+
+    if (adminSearch) {
+        adminSearch.addEventListener("input", filterAdminRecords);
+    }
+
+    // Recuperar la pestaña indicada en la URL, si existe.
+    const requestedTab = window.location.hash.replace("#", "");
+
+    const validTab = Array.from(adminTabs).some(
+        (tab) => tab.dataset.adminTab === requestedTab
+    );
+
+    if (validTab) {
+        activateAdminTab(requestedTab);
+    } else {
+        filterAdminRecords();
+    }
+}

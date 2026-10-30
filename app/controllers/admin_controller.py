@@ -81,16 +81,19 @@ def login():
     return render_template("admin_login.html")
 
 
+from app.models.project import get_all_projects
+from app.models.skill import get_all_skills
+from app.models.experience import get_all_experiences
+
+
 @admin_bp.route("/")
 @login_required
 def dashboard():
-    from app.models.project import get_all_projects
-
-    projects = get_all_projects()
-
     return render_template(
         "admin_dashboard.html",
-        projects=projects,
+        projects=get_all_projects(),
+        skills=get_all_skills(),
+        experiences=get_all_experiences(),
     )
 
 
