@@ -80,6 +80,7 @@ def test_admin_dashboard_requires_login(client):
     assert "/admin/login" in response.headers["Location"]
 
 
+
 def test_admin_login_with_correct_password(client):
     response = client.get("/admin/login")
     assert response.status_code == 200
@@ -97,7 +98,13 @@ def test_admin_login_with_correct_password(client):
     )
 
     assert response.status_code == 200
-    assert b"Proyectos registrados" in response.data
+
+    # Comprobar que el inicio de sesión llevó al dashboard.
+    assert response.request.path == "/admin/"
+
+    # Comprobar que se está mostrando el nuevo panel dinámico.
+    assert b"data-admin-panel" in response.data
+    assert b"Proyectos" in response.data
 
 
 def test_admin_login_with_wrong_password(client):

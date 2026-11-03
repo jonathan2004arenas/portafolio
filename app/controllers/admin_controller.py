@@ -158,7 +158,7 @@ def create_project_view():
         create_project(data)
         flash("Proyecto creado correctamente.", "success")
 
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#projects")
 
     return render_template(
         "admin_project_form.html",
@@ -201,7 +201,7 @@ def edit_project_view(project_id):
         update_project(project_id, data)
         flash("Proyecto actualizado correctamente.", "success")
 
-        return redirect(url_for("admin.dashboard"))
+        return redirect(url_for("admin.dashboard") + "#projects")
 
     return render_template(
         "admin_project_form.html",
@@ -239,7 +239,7 @@ def delete_project_view(project_id):
         "success",
     )
 
-    return redirect(url_for("admin.dashboard"))
+    return redirect(url_for("admin.dashboard") + "#projects")
 
 
 def _get_skill_form_data():
@@ -317,7 +317,7 @@ def create_skill_view():
             ), 400
 
         flash("Habilidad creada correctamente.", "success")
-        return redirect(url_for("admin.skills_list"))
+        return redirect(url_for("admin.dashboard") + "#skills")
 
     return render_template(
         "admin_skill_form.html",
@@ -375,7 +375,7 @@ def edit_skill_view(skill_id):
             abort(404)
 
         flash("Habilidad actualizada correctamente.", "success")
-        return redirect(url_for("admin.skills_list"))
+        return redirect(url_for("admin.dashboard") + "#skills")
 
     return render_template(
         "admin_skill_form.html",
@@ -401,7 +401,7 @@ def delete_skill_view(skill_id):
     delete_skill(skill_id)
 
     flash("Habilidad eliminada correctamente.", "success")
-    return redirect(url_for("admin.skills_list"))
+    return redirect(url_for("admin.dashboard") + "#skills")
 
 
 def _get_experience_form_data():
@@ -499,7 +499,7 @@ def create_experience_view():
             ), 400
 
         flash("Experiencia creada correctamente.", "success")
-        return redirect(url_for("admin.experiences_list"))
+        return redirect(url_for("admin.dashboard") + "#experiences")
 
     return render_template(
         "admin_experience_form.html",
@@ -545,7 +545,7 @@ def edit_experience_view(experience_id):
             abort(404)
 
         flash("Experiencia actualizada correctamente.", "success")
-        return redirect(url_for("admin.experiences_list"))
+        return redirect(url_for("admin.dashboard") + "#experiences")
 
     return render_template(
         "admin_experience_form.html",
@@ -578,4 +578,4 @@ def delete_experience_view(experience_id):
         abort(404)
 
     flash("Experiencia eliminada correctamente.", "success")
-    return redirect(url_for("admin.experiences_list"))
+    return redirect(url_for("admin.dashboard") + "#experiences")

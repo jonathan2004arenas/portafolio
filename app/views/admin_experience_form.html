@@ -1,138 +1,172 @@
 
 {% extends "base.html" %}
 
-{% block title %}{{ form_title }} | Panel{% endblock %}
+{% block title %}
+    {{ "Editar experiencia" if experience else "Crear experiencia" }} | Panel
+{% endblock %}
 
 {% block content %}
-<section class="content-section section-shell">
+<section class="content-section section-shell admin-form-page">
+
     <div class="section-heading">
         <p class="eyebrow">PANEL DE ADMINISTRACIÓN</p>
-        <h1>{{ form_title }}</h1>
+
+        <h1>
+            {{ "Editar experiencia" if experience else "Crear experiencia" }}
+        </h1>
+
         <p>
-            Completa la información que quieres mostrar en tu portafolio.
+            Completa la información de tu experiencia profesional,
+            proyecto personal o formación.
         </p>
     </div>
 
-    <form method="POST"
-          class="surface-card about-card"
-          style="display: grid; gap: 1.25rem;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="admin-flash" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
 
-        <input type="hidden"
-               name="csrf_token"
-               value="{{ csrf_token() }}">
+    <form method="POST" class="surface-card admin-form-card">
 
-        <div>
-            <label for="title">Cargo o nombre de la experiencia *</label>
-            <input id="title"
-                   name="title"
-                   type="text"
-                   maxlength="200"
-                   required
-                   value="{{ experience.title if experience else '' }}"
-                   placeholder="Ej. Desarrollo de proyectos web">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="admin-form-grid">
+
+            <div class="admin-form-field">
+                <label for="title">Cargo o nombre de la experiencia *</label>
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    maxlength="200"
+                    required
+                    value="{{ experience.title if experience else '' }}"
+                    placeholder="Ej. Desarrollo de proyectos web"
+                >
+            </div>
+
+            <div class="admin-form-field">
+                <label for="organization">Empresa o institución *</label>
+                <input
+                    id="organization"
+                    name="organization"
+                    type="text"
+                    maxlength="200"
+                    required
+                    value="{{ experience.organization if experience else '' }}"
+                    placeholder="Ej. Proyecto personal"
+                >
+            </div>
+
+            <div class="admin-form-field">
+                <label for="category">Categoría *</label>
+                <select id="category" name="category" required>
+                    <option value="">Selecciona una categoría</option>
+
+                    <option value="Experiencia laboral"
+                        {% if experience and experience.category == "Experiencia laboral" %}selected{% endif %}>
+                        Experiencia laboral
+                    </option>
+
+                    <option value="Formación académica"
+                        {% if experience and experience.category == "Formación académica" %}selected{% endif %}>
+                        Formación académica
+                    </option>
+
+                    <option value="Formación complementaria"
+                        {% if experience and experience.category == "Formación complementaria" %}selected{% endif %}>
+                        Formación complementaria
+                    </option>
+
+                    <option value="Proyecto personal"
+                        {% if experience and experience.category == "Proyecto personal" %}selected{% endif %}>
+                        Proyecto personal
+                    </option>
+                </select>
+            </div>
+
+            <div class="admin-form-row">
+                <div class="admin-form-field">
+                    <label for="start_date">Fecha de inicio</label>
+                    <input
+                        id="start_date"
+                        name="start_date"
+                        type="text"
+                        maxlength="100"
+                        value="{{ experience.start_date if experience else '' }}"
+                        placeholder="Ej. Enero de 2025"
+                    >
+                </div>
+
+                <div class="admin-form-field">
+                    <label for="end_date">Fecha de finalización</label>
+                    <input
+                        id="end_date"
+                        name="end_date"
+                        type="text"
+                        maxlength="100"
+                        value="{{ experience.end_date if experience else '' }}"
+                        placeholder="Ej. Actualidad"
+                    >
+                </div>
+            </div>
+
+            <div class="admin-form-field">
+                <label for="description">Descripción *</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    maxlength="5000"
+                    required
+                    placeholder="Describe tus responsabilidades, aprendizajes o logros."
+                >{{ experience.description if experience else '' }}</textarea>
+            </div>
+
+            <div class="admin-form-field">
+                <label for="technologies">Tecnologías o etiquetas</label>
+                <input
+                    id="technologies"
+                    name="technologies"
+                    type="text"
+                    value="{{ experience.technologies | join(', ') if experience else '' }}"
+                    placeholder="HTML, CSS, JavaScript"
+                >
+                <small>Separa cada tecnología o etiqueta con una coma.</small>
+            </div>
+
+            <div class="admin-form-field">
+                <label for="sort_order">Orden de visualización</label>
+                <input
+                    id="sort_order"
+                    name="sort_order"
+                    type="number"
+                    min="0"
+                    step="1"
+                    required
+                    value="{{ experience.sort_order if experience else 0 }}"
+                >
+                <small>Los valores más bajos aparecerán primero.</small>
+            </div>
+
         </div>
 
-        <div>
-            <label for="organization">Empresa o institución *</label>
-            <input id="organization"
-                   name="organization"
-                   type="text"
-                   maxlength="200"
-                   required
-                   value="{{ experience.organization if experience else '' }}"
-                   placeholder="Ej. Proyecto personal">
-        </div>
-        
-        <div class="form-group">
-            <label for="category">Categoría</label>
-
-            <select id="category" name="category" required>
-                <option value="">Selecciona una categoría</option>
-
-                <option value="Experiencia laboral"
-                    {% if experience and experience.category == "Experiencia laboral" %}selected{% endif %}>
-                    Experiencia laboral
-                </option>
-
-                <option value="Formación académica"
-                    {% if experience and experience.category == "Formación académica" %}selected{% endif %}>
-                    Formación académica
-                </option>
-
-                <option value="Formación complementaria"
-                    {% if experience and experience.category == "Formación complementaria" %}selected{% endif %}>
-                    Formación complementaria
-                </option>
-
-                <option value="Proyecto personal"
-                    {% if experience and experience.category == "Proyecto personal" %}selected{% endif %}>
-                    Proyecto personal
-                </option>
-            </select>
-        </div>
-
-        <div>
-            <label for="start_date">Fecha de inicio</label>
-            <input id="start_date"
-                   name="start_date"
-                   type="text"
-                   maxlength="100"
-                   value="{{ experience.start_date if experience else '' }}"
-                   placeholder="Ej. Enero de 2025">
-        </div>
-
-        <div>
-            <label for="end_date">Fecha de finalización</label>
-            <input id="end_date"
-                   name="end_date"
-                   type="text"
-                   maxlength="100"
-                   value="{{ experience.end_date if experience else '' }}"
-                   placeholder="Ej. Actualidad">
-        </div>
-
-        <div>
-            <label for="description">Descripción *</label>
-            <textarea id="description"
-                      name="description"
-                      rows="5"
-                      maxlength="5000"
-                      required
-                      placeholder="Describe tus responsabilidades, aprendizajes o logros.">{{ experience.description if experience else '' }}</textarea>
-        </div>
-
-        <div>
-            <label for="technologies">Tecnologías o etiquetas</label>
-            <input id="technologies"
-                   name="technologies"
-                   type="text"
-                   value="{{ experience.technologies | join(', ') if experience else '' }}"
-                   placeholder="HTML, CSS, JavaScript">
-            <small>Separa las tecnologías con comas.</small>
-        </div>
-
-        <div>
-            <label for="sort_order">Orden de visualización</label>
-            <input id="sort_order"
-                   name="sort_order"
-                   type="number"
-                   min="0"
-                   step="1"
-                   required
-                   value="{{ experience.sort_order if experience else 0 }}">
-            <small>Los valores más bajos aparecerán primero.</small>
-        </div>
-
-        <div class="hero-actions">
+        <div class="admin-form-actions">
             <button class="button button-primary" type="submit">
-                Guardar experiencia
+                {{ "Guardar cambios" if experience else "Crear experiencia" }}
             </button>
 
-            <a class="button button-secondary"
-               href="{{ url_for('admin.experiences_list') }}">
+            <a
+                class="button button-secondary"
+                href="{{ url_for('admin.dashboard') }}#experiences"
+            >
                 Cancelar
             </a>
         </div>
+
     </form>
 </section>
 {% endblock %}
