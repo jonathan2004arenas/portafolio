@@ -1,4 +1,3 @@
-
 /* ========================================
    1. TEMAS Y VARIABLES
 ======================================== */
@@ -1386,110 +1385,193 @@ a:focus-visible {
 
 
 /* ========================================
-   EXPERIMENTO: RETRATO CON PROFUNDIDAD
-   ======================================== */
+   SOBRE MÍ: FOTO CON MARCO 3D + TARJETA
+======================================== */
 
+/* Título centrado */
+.section-heading-center {
+    max-width: none;
+    margin-bottom: clamp(30px, 5vw, 50px);
+    text-align: center;
+}
+
+.about-title {
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+
+/* Layout de dos columnas */
 .about-layout {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     align-items: center;
     gap: clamp(35px, 6vw, 80px);
 }
 
-/* Zona donde se superponen las capas */
+/* ---------- Columna izquierda: capas de la fotografía ---------- */
+
+/*
+   Tres capas apiladas (de atrás hacia adelante):
+   1. .portrait-back-frame  -> marco con borde, desfasado arriba/izquierda
+   2. .portrait-box         -> cuadro de color detrás de la persona
+   3. .portrait-cutout      -> foto PNG sin fondo, más grande que el cuadro,
+                               por eso "se sale" de él (cabeza, hombros, base)
+   Todo está en porcentajes para escalar bien en cualquier pantalla.
+*/
+
+/* ========================================
+   RETRATO 3D: COLORES ADAPTATIVOS
+======================================== */
+
 .portrait-composition {
+    --portrait-box: #293653;
+    --portrait-frame-line: #a5b4fc;
+    --portrait-frame-fill: rgba(165, 180, 252, 0.09);
+
     position: relative;
     isolation: isolate;
-    width: 100%;
-    max-width: 430px;
-    min-height: 440px;
+    width: min(100%, 420px);
+    aspect-ratio: 393 / 465;
     margin: 0 auto;
 }
 
-/* Marco posterior */
+/* Modo oscuro */
+html[data-theme="dark"] .portrait-composition {
+    --portrait-box: linear-gradient(
+        145deg,
+        #293653,
+        #17243e
+    );
+    --portrait-frame-line: #a5b4fc;
+    --portrait-frame-fill: rgba(103, 232, 249, 0.07);
+}
+
+/* Modo claro */
+html[data-theme="light"] .portrait-composition {
+    --portrait-box: linear-gradient(
+        145deg,
+        #dce4ff,
+        #c5d4ed
+    );
+    --portrait-frame-line: #5145cd;
+    --portrait-frame-fill: rgba(81, 69, 205, 0.07);
+}
+
+/* Capa 1: marco de fondo */
 .portrait-back-frame {
     position: absolute;
-    z-index: -1;
-    top: 20px;
-    right: 5px;
-    bottom: 35px;
-    left: 35px;
-    border: 1px solid rgba(190, 202, 224, 0.8);
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.015);
+    z-index: 0;
+    top: 5.5%;
+    left: 5%;
+    width: 82%;
+    height: 85%;
+    border: 6px solid var(--portrait-frame-line);
+    /* background: var(--portrait-frame-fill); */
+    /* transition: transform 0.4s ease; */
+    border-color: var(--portrait-frame-line);
+    background: var(--portrait-frame-fill);
+    transition: border-color 0.35s ease,
+                background 0.35s ease,
+                transform 0.4s ease;
 }
 
-/* Tarjeta central de la fotografía */
-.portrait-photo-card {
+/* Capa 2: cuadro de color detrás de la persona */
+.portrait-box {
     position: absolute;
-    top: 0;
-    right: 35px;
-    bottom: 65px;
-    left: 0;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
-    background: #85858a;
-    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.28);
+    z-index: 1;
+    top: 19.5%;
+    left: 19%;
+    right: 6.4%;
+    bottom: 3.5%;
+    /* background: var(--portrait-box); */
+    box-shadow: -14px 14px 30px rgba(0, 0, 0, 0.35);
+    /* transition: transform 0.4s ease; */
+    background: var(--portrait-box);
+    transition: background 0.35s ease, transform 0.4s ease;
 }
 
-/* Retrato */
-.portrait-photo {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 20%;
-}
-
-/* Etiqueta por delante de la composición */
-.portrait-caption {
+/* Capa 3: persona recortada, por delante de todo */
+.portrait-cutout {
     position: absolute;
     z-index: 2;
-    right: 0;
-    bottom: 15px;
+    top: 13.5%;
+    left: 17%;
+    width: 80%;
+    height: 83.3%;
+    object-fit: cover;
+    object-position: center 90%;
+    /* La sombra sigue la silueta de la persona y da profundidad */
+    filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.45));
+    transition: transform 0.4s ease;
+}
+
+/* Efecto de profundidad: las capas se separan al pasar el cursor */
+@media (hover: hover) {
+    .portrait-composition:hover .portrait-back-frame {
+        transform: translate(-8px, -8px);
+    }
+
+    .portrait-composition:hover .portrait-cutout {
+        transform: translate(5px, -4px) scale(1.02);
+    }
+}
+
+/* ---------- Columna derecha: tarjeta de contenido ---------- */
+
+.about-content-card {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: var(--shadow);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
+    flex-direction: column;
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
-.portrait-caption-dot {
-    width: 8px;
-    height: 8px;
+.about-content-card h3 {
+    margin: 14px 0 16px;
+}
+
+.about-content-card p {
+    margin: 0 0 14px;
+    line-height: 1.75;
+}
+
+/* Zona inferior con el botón de descarga */
+.about-card-footer {
+    margin-top: auto;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.about-content-card p:last-of-type {
+    margin-bottom: 26px;
+}
+
+.about-card-footer .button-icon {
     flex-shrink: 0;
-    border-radius: 50%;
-    background: #34d399;
-    box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
 }
 
-/* Adaptación a móviles */
+/* ---------- Adaptación a móviles ---------- */
+
 @media (max-width: 760px) {
     .about-layout {
         grid-template-columns: minmax(0, 1fr);
-        gap: 30px;
+        gap: 36px;
     }
 
     .portrait-composition {
-        width: min(100%, 380px);
-        min-height: 390px;
+        width: min(100%, 340px);
     }
 
-    .portrait-photo-card {
-        right: 28px;
-        bottom: 55px;
+    .about-card-footer .button {
+        width: 100%;
     }
+}
 
-    .portrait-back-frame {
-        left: 25px;
-        bottom: 28px;
+@media (prefers-reduced-motion: reduce) {
+    .portrait-back-frame,
+    .portrait-box,
+    .portrait-cutout {
+        transition: none;
     }
 }
 
@@ -2455,214 +2537,5 @@ a:focus-visible {
     .admin-form-actions .button {
         width: 100%;
         box-sizing: border-box;
-    }
-}
-
-/* ========================================
-   SOBRE MÍ - FOTOGRAFÍA CON PROFUNDIDAD 3D
-======================================== */
-
-.about-section-heading {
-    max-width: 100%;
-    margin-bottom: 65px;
-    text-align: center;
-}
-
-.about-section-heading .eyebrow {
-    justify-content: center;
-}
-
-.about-section-heading h2 {
-    margin-top: 12px;
-    font-size: clamp(2.3rem, 4.5vw, 3.3rem);
-    letter-spacing: 0.04em;
-}
-
-.about-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    align-items: center;
-    gap: clamp(35px, 6vw, 75px);
-}
-
-/* Composición de la fotografía */
-.portrait-composition {
-    position: relative;
-    isolation: isolate;
-    width: 100%;
-    max-width: 420px;
-    min-height: 450px;
-    margin: 0 auto;
-    perspective: 1000px;
-}
-
-/* Marco posterior desplazado */
-.portrait-back-frame {
-    position: absolute;
-    z-index: -1;
-    top: -20px;
-    right: 20px;
-    bottom: 20px;
-    left: -20px;
-    border: 2px solid var(--accent);
-    border-radius: 5px;
-    background: linear-gradient(
-        145deg,
-        rgba(165, 180, 252, 0.10),
-        rgba(103, 232, 249, 0.025)
-    );
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
-}
-
-/* Fotografía principal */
-.portrait-photo-card {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 5px;
-    background: var(--surface);
-    box-shadow:
-        0 30px 65px rgba(0, 0, 0, 0.35),
-        0 8px 20px rgba(0, 0, 0, 0.18);
-    transform: rotateY(-4deg) rotateX(2deg);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.portrait-photo-card:hover {
-    transform: rotateY(0) rotateX(0) translateY(-5px);
-    box-shadow: 0 38px 75px rgba(0, 0, 0, 0.4);
-}
-
-.portrait-photo {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 20%;
-}
-
-/* Etiqueta superpuesta */
-.portrait-caption {
-    position: absolute;
-    z-index: 2;
-    right: -15px;
-    bottom: 25px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 17px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: var(--shadow);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-}
-
-.portrait-caption-dot {
-    width: 8px;
-    height: 8px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: #34d399;
-    box-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
-}
-
-/* Tarjeta de presentación */
-.about-main-card {
-    display: flex;
-    min-height: 390px;
-    flex-direction: column;
-    padding: clamp(25px, 4vw, 42px);
-    background: linear-gradient(
-        145deg,
-        var(--surface),
-        var(--background-soft)
-    );
-}
-
-.about-main-card h3 {
-    margin: 20px 0 15px;
-    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-    line-height: 1.3;
-}
-
-.about-main-card p {
-    color: var(--muted);
-    line-height: 1.85;
-}
-
-.about-card-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 20px;
-    margin-top: auto;
-    padding-top: 28px;
-}
-
-.about-cv-button {
-    gap: 10px;
-}
-
-.about-cv-button svg {
-    flex-shrink: 0;
-}
-
-/* Responsive */
-@media (max-width: 760px) {
-    .about-section-heading {
-        margin-bottom: 45px;
-    }
-
-    .about-layout {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 45px;
-    }
-
-    .portrait-composition {
-        width: min(85%, 380px);
-        min-height: 400px;
-    }
-
-    .portrait-caption {
-        right: -10px;
-        bottom: 18px;
-    }
-
-    .about-main-card {
-        min-height: auto;
-    }
-}
-
-@media (max-width: 520px) {
-    .portrait-composition {
-        width: 85%;
-        min-height: 350px;
-    }
-
-    .portrait-back-frame {
-        top: -14px;
-        left: -14px;
-        right: 14px;
-        bottom: 14px;
-    }
-
-    .portrait-caption {
-        right: -12px;
-        padding: 10px 12px;
-        font-size: 0.65rem;
-    }
-
-    .about-card-footer {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .about-card-footer .button {
-        width: 100%;
     }
 }
